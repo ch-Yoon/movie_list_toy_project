@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">부스트캠프 사전과제</string>
 
+    <!-- movie list string values -->
+    <string name="movie_list_movie_data_request_button">검색</string>
+    <string name="movie_list_movie_title_edit_text_hint">영화 제목을 입력해주세요</string>
 </resources>
