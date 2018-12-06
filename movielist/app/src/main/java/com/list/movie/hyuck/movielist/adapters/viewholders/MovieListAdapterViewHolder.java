@@ -9,7 +9,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.list.movie.hyuck.movielist.R;
-import com.list.movie.hyuck.movielist.interfaces.OnMovieDataItemClickListener;
+import com.list.movie.hyuck.movielist.listeners.OnMovieDataItemClickListener;
 import com.list.movie.hyuck.movielist.items.MovieData;
 
 public class MovieListAdapterViewHolder extends RecyclerView.ViewHolder {
@@ -34,7 +34,7 @@ public class MovieListAdapterViewHolder extends RecyclerView.ViewHolder {
         movieDataItemRootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                processingMovieDataItemClick(view);
+                processingMovieDataItemClick();
             }
         });
 
@@ -56,17 +56,21 @@ public class MovieListAdapterViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-    private void processingMovieDataItemClick(View view) {
+    private void processingMovieDataItemClick() {
         if(onMovieDataItemClickListener != null) {
             int position = getAdapterPosition();
 
-            onMovieDataItemClickListener.onMovieDataItemClick(view, position);
+            onMovieDataItemClickListener.onMovieDataItemClick(position);
         }
     }
 
     private void processingMovieDataToView(MovieData movieData) {
         if(movieData != null) {
-
+            movieTitleTextView.setText(movieData.getTitle());
+            userRatingBar.setRating(movieData.getUserRating());
+            moviePubDateTextView.setText(movieData.getPubDate());
+            movieDirectorTextView.setText(movieData.getDirector());
+            movieActorTextView.setText(movieData.getActor());
         }
     }
 }

@@ -2,15 +2,17 @@ package com.list.movie.hyuck.movielist.items;
 
 public class MovieData {
     private String title;
+    private String link;
     private String image;
-    private int userRating;
+    private float userRating;
     private String pubDate;
     private String director;
     private String actor;
 
 
-    public MovieData(String title, String image, int userRating, String pubDate, String director, String actor) {
+    public MovieData(String title, String link, String image, float userRating, String pubDate, String director, String actor) {
         this.title = title;
+        this.link = link;
         this.image = image;
         this.userRating = userRating;
         this.pubDate = pubDate;
@@ -19,15 +21,25 @@ public class MovieData {
     }
 
 
+    public void manufactureUserRating(float maximumRating) {
+        final float defaultMaximumRating = 10f;
+
+        userRating = userRating * (maximumRating / defaultMaximumRating);
+    }
+
     public String getTitle() {
         return title;
+    }
+
+    public String getLink() {
+        return link;
     }
 
     public String getImage() {
         return image;
     }
 
-    public int getUserRating() {
+    public float getUserRating() {
         return userRating;
     }
 

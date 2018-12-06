@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -13,7 +14,7 @@ import com.list.movie.hyuck.movielist.R;
 import com.list.movie.hyuck.movielist.adapters.MovieListAdapter;
 import com.list.movie.hyuck.movielist.contracts.MovieListAdapterContract;
 import com.list.movie.hyuck.movielist.contracts.MovieListContract;
-import com.list.movie.hyuck.movielist.interfaces.OnMovieDataItemClickListener;
+import com.list.movie.hyuck.movielist.listeners.OnMovieDataItemClickListener;
 import com.list.movie.hyuck.movielist.presenters.MovieListPresenter;
 
 public class MovieListActivity extends AppCompatActivity implements MovieListContract.View{
@@ -56,6 +57,7 @@ public class MovieListActivity extends AppCompatActivity implements MovieListCon
 
     private void initPresenter() {
         presenter = new MovieListPresenter(this);
+        presenter.setView(this);
     }
 
     private void initViews() {
@@ -72,22 +74,26 @@ public class MovieListActivity extends AppCompatActivity implements MovieListCon
 
     private void initAdapterView() {
         RecyclerView movieListRecyclerView = findViewById(R.id.movieListRecyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        movieListRecyclerView.setLayoutManager(layoutManager);
+
         MovieListAdapter movieListAdapter = new MovieListAdapter(this);
         movieListAdapter.setOnMovieDataItemClickListener(new OnMovieDataItemClickListener() {
             @Override
-            public void onMovieDataItemClick(View view, int position) {
-                requestPresenterToProcessDataClick(view, position);
+            public void onMovieDataItemClick(int position) {
+                requestPresenterToProcessDataClick(position);
             }
         });
-        movieListRecyclerView.setAdapter(movieListAdapter);
 
+        movieListRecyclerView.setAdapter(movieListAdapter);
         adapterView = movieListAdapter;
+        presenter.setAdapterModel(movieListAdapter);
     }
 
 
     @Override
-    public void refreshView() {
-        adapterView.refresh();
+    public void refreshMovieList() {
+        processingMovieListRefresh();
     }
 
     @Override
@@ -99,11 +105,15 @@ public class MovieListActivity extends AppCompatActivity implements MovieListCon
     private void requestMovieDataToPresenter() {
         String movieTitle = movieTitleEditText.getText().toString();
 
-        // ToDo request movie data using movie title to presenter
+        presenter.loadMovieData(movieTitle);
     }
 
-    private void requestPresenterToProcessDataClick(View view, int position) {
-        //ToDo request presenter to process data click
+    private void requestPresenterToProcessDataClick(int position) {
+        presenter.movieDataClick(position);
+    }
+
+    private void processingMovieListRefresh() {
+        adapterView.refresh();
     }
 
     private void processingMoveToMovieWeb(String uri) {
