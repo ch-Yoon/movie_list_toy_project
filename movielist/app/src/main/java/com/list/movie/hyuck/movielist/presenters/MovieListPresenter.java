@@ -9,6 +9,7 @@ public class MovieListPresenter implements MovieListContract.Presenter {
     private MovieListContract.View movieListView;
     private MovieListModel movieListModel;
 
+
     public MovieListPresenter(@NonNull MovieListContract.View movieListView) {
         this.movieListView = movieListView;
         movieListModel = new MovieListModel();

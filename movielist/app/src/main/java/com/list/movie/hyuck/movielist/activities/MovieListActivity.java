@@ -13,36 +13,14 @@ import com.list.movie.hyuck.movielist.R;
 import com.list.movie.hyuck.movielist.adapters.MovieListAdapter;
 import com.list.movie.hyuck.movielist.contracts.MovieListAdapterContract;
 import com.list.movie.hyuck.movielist.contracts.MovieListContract;
+import com.list.movie.hyuck.movielist.interfaces.OnMovieDataItemClickListener;
 import com.list.movie.hyuck.movielist.presenters.MovieListPresenter;
 
 public class MovieListActivity extends AppCompatActivity implements MovieListContract.View{
     private MovieListContract.Presenter presenter;
     private MovieListAdapterContract.View adapterView;
+
     private EditText movieTitleEditText;
-
-
-    private void initPresenter() {
-        presenter = new MovieListPresenter(this);
-    }
-
-    private void initViews() {
-        movieTitleEditText = findViewById(R.id.movieTitleEditText);
-
-        Button movieDataRequestButton = findViewById(R.id.movieDataRequestButton);
-        movieDataRequestButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                processingMovieDataRequestToPresenter();
-            }
-        });
-    }
-
-    private void initAdapterView() {
-        RecyclerView movieListRecyclerView = findViewById(R.id.movieListRecyclerView);
-        MovieListAdapter movieListAdapter = new MovieListAdapter(this);
-        movieListRecyclerView.setAdapter(movieListAdapter);
-        adapterView = movieListAdapter;
-    }
 
 
     @Override
@@ -76,6 +54,37 @@ public class MovieListActivity extends AppCompatActivity implements MovieListCon
     }
 
 
+    private void initPresenter() {
+        presenter = new MovieListPresenter(this);
+    }
+
+    private void initViews() {
+        movieTitleEditText = findViewById(R.id.movieTitleEditText);
+
+        Button movieDataRequestButton = findViewById(R.id.movieDataRequestButton);
+        movieDataRequestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                requestMovieDataToPresenter();
+            }
+        });
+    }
+
+    private void initAdapterView() {
+        RecyclerView movieListRecyclerView = findViewById(R.id.movieListRecyclerView);
+        MovieListAdapter movieListAdapter = new MovieListAdapter(this);
+        movieListAdapter.setOnMovieDataItemClickListener(new OnMovieDataItemClickListener() {
+            @Override
+            public void onMovieDataItemClick(View view, int position) {
+                requestPresenterToProcessDataClick(view, position);
+            }
+        });
+        movieListRecyclerView.setAdapter(movieListAdapter);
+
+        adapterView = movieListAdapter;
+    }
+
+
     @Override
     public void refreshView() {
         adapterView.refresh();
@@ -87,10 +96,14 @@ public class MovieListActivity extends AppCompatActivity implements MovieListCon
     }
 
 
-    private void processingMovieDataRequestToPresenter() {
+    private void requestMovieDataToPresenter() {
         String movieTitle = movieTitleEditText.getText().toString();
 
         // ToDo request movie data using movie title to presenter
+    }
+
+    private void requestPresenterToProcessDataClick(View view, int position) {
+        //ToDo request presenter to process data click
     }
 
     private void processingMoveToMovieWeb(String uri) {
