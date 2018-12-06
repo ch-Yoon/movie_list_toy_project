@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.list.movie.hyuck.movielist.R;
 import com.list.movie.hyuck.movielist.adapters.MovieListAdapter;
@@ -101,6 +102,11 @@ public class MovieListActivity extends AppCompatActivity implements MovieListCon
         processingMoveToMovieWeb(uri);
     }
 
+    @Override
+    public void showErrorMessage(String errorMessage) {
+        processingShowErrorMessage(errorMessage);
+    }
+
 
     private void requestMovieDataToPresenter() {
         String movieTitle = movieTitleEditText.getText().toString();
@@ -121,5 +127,9 @@ public class MovieListActivity extends AppCompatActivity implements MovieListCon
         Intent movieWebIntent = new Intent(Intent.ACTION_VIEW, movieWebUri);
 
         startActivity(movieWebIntent);
+    }
+
+    private void processingShowErrorMessage(String errorMessage) {
+        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
     }
 }

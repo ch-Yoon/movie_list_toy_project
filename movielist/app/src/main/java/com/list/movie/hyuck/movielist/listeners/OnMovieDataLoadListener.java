@@ -6,8 +6,9 @@ import java.util.ArrayList;
 
 public interface OnMovieDataLoadListener {
     void onSuccess(ArrayList<MovieData> movieDataList);
+    void onApplicationError(String errorMessage);
     void onNetworkNotConnectingError();
-    void onServerSystemError();
+    void onServerSystemError(String errorMessage);
+    void onNoMoreData();
     void onNonExistentWordError();
-
 }

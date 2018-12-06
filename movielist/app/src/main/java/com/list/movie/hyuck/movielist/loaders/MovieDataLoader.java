@@ -3,10 +3,9 @@ package com.list.movie.hyuck.movielist.loaders;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.AsyncTask;
-import android.util.Log;
 
 import com.google.gson.Gson;
+import com.list.movie.hyuck.movielist.constants.LoadError;
 import com.list.movie.hyuck.movielist.items.MovieData;
 import com.list.movie.hyuck.movielist.items.MovieDataList;
 import com.list.movie.hyuck.movielist.listeners.OnMovieDataLoadListener;
@@ -66,8 +65,8 @@ public class MovieDataLoader {
             }
 
             @Override
-            public void onError(String errorCode) {
-                processingRequestErrorData(errorCode);
+            public void onError(LoadError loadError) {
+                processingRequestErrorData(loadError, onMovieDataLoadListener);
             }
         });
     }
@@ -77,11 +76,40 @@ public class MovieDataLoader {
 
         MovieDataList movieDataList = gson.fromJson(response, MovieDataList.class);
         ArrayList<MovieData> items = movieDataList.getResult();
-
-        onMovieDataLoadListener.onSuccess(items);
+        if(items.size() == 0) {
+            onMovieDataLoadListener.onNonExistentWordError();
+        } else {
+            onMovieDataLoadListener.onSuccess(items);
+        }
     }
 
-    private void processingRequestErrorData(String errorCode) {
-
+    private void processingRequestErrorData(LoadError error, OnMovieDataLoadListener onMovieDataLoadListener) {
+        String errorMessage = error.getErrorMessage();
+        switch (error) {
+            case SE01:
+                onMovieDataLoadListener.onApplicationError(errorMessage);
+                break;
+            case SE02:
+                onMovieDataLoadListener.onApplicationError(errorMessage);
+                break;
+            case SE03:
+                onMovieDataLoadListener.onApplicationError(errorMessage);
+                break;
+            case SE04:
+                onMovieDataLoadListener.onApplicationError(errorMessage);
+                break;
+            case SE05:
+                onMovieDataLoadListener.onNonExistentWordError();
+                break;
+            case SE06:
+                onMovieDataLoadListener.onApplicationError(errorMessage);
+                break;
+            case SE99:
+                onMovieDataLoadListener.onServerSystemError(errorMessage);
+                break;
+            case UNKNOWN_ERROR:
+                onMovieDataLoadListener.onApplicationError(errorMessage);
+                break;
+        }
     }
 }

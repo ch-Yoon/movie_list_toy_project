@@ -1,7 +1,9 @@
 package com.list.movie.hyuck.movielist.presenters;
 
 import android.content.Context;
+import android.content.res.Resources;
 
+import com.list.movie.hyuck.movielist.R;
 import com.list.movie.hyuck.movielist.contracts.MovieListAdapterContract;
 import com.list.movie.hyuck.movielist.contracts.MovieListContract;
 import com.list.movie.hyuck.movielist.listeners.OnMovieDataLoadListener;
@@ -15,6 +17,7 @@ public class MovieListPresenter implements MovieListContract.Presenter {
     private MovieListAdapterContract.Model adapterModel;
     private MovieListModel movieListModel;
 
+    private Resources resources;
 
     public MovieListPresenter(Context context) {
         init(context);
@@ -22,6 +25,7 @@ public class MovieListPresenter implements MovieListContract.Presenter {
 
     private void init(Context context) {
         movieListModel = new MovieListModel(context);
+        resources = context.getResources();
     }
 
     @Override
@@ -53,18 +57,28 @@ public class MovieListPresenter implements MovieListContract.Presenter {
             }
 
             @Override
-            public void onNetworkNotConnectingError() {
-
+            public void onApplicationError(String errorMessage) {
+                processingOnApplicationError(errorMessage);
             }
 
             @Override
-            public void onServerSystemError() {
+            public void onNetworkNotConnectingError() {
+                processingOnNetworkNotConnectingError();
+            }
 
+            @Override
+            public void onServerSystemError(String errorMessage) {
+                processingOnServerSystemError(errorMessage);
+            }
+
+            @Override
+            public void onNoMoreData() {
+                processingOnNoMoreData();
             }
 
             @Override
             public void onNonExistentWordError() {
-
+                processingOnNonExistentWordError();
             }
         });
     }
@@ -91,4 +105,33 @@ public class MovieListPresenter implements MovieListContract.Presenter {
         }
     }
 
+    private void processingOnApplicationError(String errorMessage) {
+        String showMessage = String.format(resources.getString(R.string.movie_data_load_application_error), errorMessage);
+
+        movieListView.showErrorMessage(showMessage);
+    }
+
+    private void processingOnServerSystemError(String errorMessage) {
+        String showMessage = String.format(resources.getString(R.string.movie_data_load_system_error), errorMessage);
+
+        movieListView.showErrorMessage(showMessage);
+    }
+
+    private void processingOnNetworkNotConnectingError() {
+        String showMessage = resources.getString(R.string.movie_data_network_not_connecting_error);
+
+        movieListView.showErrorMessage(showMessage);
+    }
+
+    private void processingOnNoMoreData() {
+        String showMessage = resources.getString(R.string.movie_data_no_more_data_error);
+
+        movieListView.showErrorMessage(showMessage);
+    }
+
+    private void processingOnNonExistentWordError() {
+        String showMessage = resources.getString(R.string.movie_data_non_existent_word_error);
+
+        movieListView.showErrorMessage(showMessage);
+    }
 }

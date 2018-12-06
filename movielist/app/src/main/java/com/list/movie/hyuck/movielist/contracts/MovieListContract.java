@@ -4,6 +4,7 @@ public interface MovieListContract {
     interface View {
         void refreshMovieList();
         void moveToMovieWeb(String uri);
+        void showErrorMessage(String errorMessage);
     }
 
     interface Presenter {

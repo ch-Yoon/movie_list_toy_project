@@ -1,7 +1,6 @@
 package com.list.movie.hyuck.movielist.modules;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -9,13 +8,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.list.movie.hyuck.movielist.constants.LoadError;
 import com.list.movie.hyuck.movielist.listeners.OnServerRequestListener;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +39,6 @@ public class VolleySingleton implements ServerCommunicator {
 
     @Override
     public void requestData(String url, final String clientId, final String clientSecret, final OnServerRequestListener onServerRequestListener) {
-
         StringRequest request = new StringRequest(
                 Request.Method.GET,
                 url,
@@ -55,7 +52,6 @@ public class VolleySingleton implements ServerCommunicator {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
                         processingError(error, onServerRequestListener);
                     }
                 }
@@ -82,21 +78,39 @@ public class VolleySingleton implements ServerCommunicator {
 
     private void processingError(VolleyError volleyError, OnServerRequestListener onServerRequestListener) {
         if(onServerRequestListener != null) {
-            String errorCode = extractErrorCode(volleyError);
+            LoadError error = extractErrorCode(volleyError);
 
-            onServerRequestListener.onError(errorCode);
+            onServerRequestListener.onError(error);
         }
     }
 
-    private String extractErrorCode(VolleyError volleyError) {
-        String errorMessage = new String(volleyError.networkResponse.data);
+    private LoadError extractErrorCode(VolleyError volleyError) {
+        String errorCode = convertToErrorCode(volleyError);
+        LoadError error = convertToRequestError(errorCode);
+
+        return error;
+    }
+
+    private String convertToErrorCode(VolleyError volleyError) {
+        String errorMessageJSONFormat = new String(volleyError.networkResponse.data);
         try {
-            JSONObject jsonObject = new JSONObject(errorMessage);
+            JSONObject jsonObject = new JSONObject(errorMessageJSONFormat);
             String errorCode = jsonObject.getString("errorCode");
 
             return errorCode;
         } catch (JSONException e) {
-            return "unknown error";
+            return "";
         }
+    }
+
+    private LoadError convertToRequestError(String errorCode) {
+        LoadError error;
+        try {
+            error = LoadError.valueOf(errorCode);
+        } catch (IllegalArgumentException illegalArgumentException) {
+            error = LoadError.UNKNOWN_ERROR;
+        }
+
+        return error;
     }
 }
