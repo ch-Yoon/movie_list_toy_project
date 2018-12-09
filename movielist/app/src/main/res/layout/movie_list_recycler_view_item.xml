@@ -9,7 +9,7 @@
 
     <ImageView
         android:id="@+id/movieImageView"
-        android:layout_width="90dp"
+        android:layout_width="80dp"
         android:layout_height="0dp"
         android:layout_marginLeft="@dimen/movie_list_recycler_view_poster_margin"
         android:layout_marginTop="@dimen/movie_list_recycler_view_poster_margin"

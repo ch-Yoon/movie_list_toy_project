@@ -8,6 +8,7 @@ import com.list.movie.hyuck.movielist.loaders.MovieDataLoader;
 public class MovieListModel {
     private MovieDataLoader movieDataLoader;
 
+
     public MovieListModel(Context context) {
         init(context);
     }
@@ -18,6 +19,11 @@ public class MovieListModel {
 
 
     public void loadMovieData(String movieTitle, int startIndex, OnMovieDataLoadListener onMovieDataLoadListener) {
+        handlingLoadMovieData(movieTitle, startIndex, onMovieDataLoadListener);
+    }
+
+
+    private void handlingLoadMovieData(String movieTitle, int startIndex, OnMovieDataLoadListener onMovieDataLoadListener) {
         movieDataLoader.loadMovieData(movieTitle, startIndex, onMovieDataLoadListener);
     }
 }

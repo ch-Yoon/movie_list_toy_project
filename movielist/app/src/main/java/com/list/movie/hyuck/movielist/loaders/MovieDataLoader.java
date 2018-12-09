@@ -19,6 +19,7 @@ public class MovieDataLoader {
     private Context context;
     private ServerCommunicator serverCommunicator;
 
+
     public MovieDataLoader(Context context) {
         init(context);
     }
@@ -31,12 +32,12 @@ public class MovieDataLoader {
 
     public void loadMovieData(String movieTitle, int startIndex, OnMovieDataLoadListener onMovieDataLoadListener) {
         if(onMovieDataLoadListener != null) {
-            processingLoadMovieData(movieTitle, startIndex, onMovieDataLoadListener);
+            handlingLoadMovieData(movieTitle, startIndex, onMovieDataLoadListener);
         }
     }
 
 
-    private void processingLoadMovieData(String movieTitle, int startIndex, OnMovieDataLoadListener onMovieDataLoadListener) {
+    private void handlingLoadMovieData(String movieTitle, int startIndex, OnMovieDataLoadListener onMovieDataLoadListener) {
         if(isNetworkConnecting()) {
             loadMoveDataFromServer(movieTitle, startIndex, onMovieDataLoadListener);
         } else {
@@ -44,34 +45,7 @@ public class MovieDataLoader {
         }
     }
 
-    private boolean isNetworkConnecting() {
-        ConnectivityManager manager = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-
-        return networkInfo != null;
-    }
-
-    private void loadMoveDataFromServer(String movieTitle, int startIndex, final OnMovieDataLoadListener onMovieDataLoadListener) {
-        String url = "https://openapi.naver.com/v1/search/movie.json?query=" + movieTitle + "&start=" + startIndex;
-        String clientId = "8s8wwGUG6AI8OjMV1SpN";
-        String clientSecret = "lucyznUH91";
-
-        serverCommunicator.requestData(url, clientId, clientSecret, new OnServerRequestListener() {
-            @Override
-            public void onResult(String response) {
-                processingRequestResultData(response, onMovieDataLoadListener);
-            }
-
-            @Override
-            public void onError(LoadError loadError) {
-                processingRequestErrorData(loadError, onMovieDataLoadListener);
-            }
-        });
-    }
-
-    private void processingRequestResultData(String response, OnMovieDataLoadListener onMovieDataLoadListener) {
+    private void handlingRequestResultData(String response, OnMovieDataLoadListener onMovieDataLoadListener) {
         Gson gson = new Gson();
 
         MovieDataList movieDataList = gson.fromJson(response, MovieDataList.class);
@@ -83,7 +57,7 @@ public class MovieDataLoader {
         }
     }
 
-    private void processingRequestErrorData(LoadError error, OnMovieDataLoadListener onMovieDataLoadListener) {
+    private void handlingRequestErrorData(LoadError error, OnMovieDataLoadListener onMovieDataLoadListener) {
         String errorMessage = error.getErrorMessage();
         switch (error) {
             case SE01:
@@ -111,5 +85,32 @@ public class MovieDataLoader {
                 onMovieDataLoadListener.onApplicationError(errorMessage);
                 break;
         }
+    }
+
+    private boolean isNetworkConnecting() {
+        ConnectivityManager manager = (ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+
+        return networkInfo != null;
+    }
+
+    private void loadMoveDataFromServer(String movieTitle, int startIndex, final OnMovieDataLoadListener onMovieDataLoadListener) {
+        String url = "https://openapi.naver.com/v1/search/movie.json?query=" + movieTitle + "&start=" + startIndex + "&display=30";
+        String clientId = "8s8wwGUG6AI8OjMV1SpN";
+        String clientSecret = "lucyznUH91";
+
+        serverCommunicator.requestData(url, clientId, clientSecret, new OnServerRequestListener() {
+            @Override
+            public void onResult(String response) {
+                handlingRequestResultData(response, onMovieDataLoadListener);
+            }
+
+            @Override
+            public void onError(LoadError loadError) {
+                handlingRequestErrorData(loadError, onMovieDataLoadListener);
+            }
+        });
     }
 }

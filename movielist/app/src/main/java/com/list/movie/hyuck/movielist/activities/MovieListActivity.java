@@ -17,11 +17,11 @@ import com.list.movie.hyuck.movielist.contracts.MovieListAdapterContract;
 import com.list.movie.hyuck.movielist.contracts.MovieListContract;
 import com.list.movie.hyuck.movielist.listeners.OnMovieDataItemClickListener;
 import com.list.movie.hyuck.movielist.presenters.MovieListPresenter;
+import com.list.movie.hyuck.movielist.utils.KeyboardUtil;
 
 public class MovieListActivity extends AppCompatActivity implements MovieListContract.View{
     private MovieListContract.Presenter presenter;
     private MovieListAdapterContract.View adapterView;
-
     private EditText movieTitleEditText;
 
 
@@ -68,7 +68,7 @@ public class MovieListActivity extends AppCompatActivity implements MovieListCon
         movieDataRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                requestMovieDataToPresenter();
+                requestInitialMovieDataToPresenter();
             }
         });
     }
@@ -79,57 +79,66 @@ public class MovieListActivity extends AppCompatActivity implements MovieListCon
         movieListRecyclerView.setLayoutManager(layoutManager);
 
         MovieListAdapter movieListAdapter = new MovieListAdapter(this);
-        movieListAdapter.setOnMovieDataItemClickListener(new OnMovieDataItemClickListener() {
+        movieListRecyclerView.setAdapter(movieListAdapter);
+        presenter.setAdapterModel(movieListAdapter);
+
+        adapterView = movieListAdapter;
+        adapterView.setOnMovieDataItemClickListener(new OnMovieDataItemClickListener() {
             @Override
             public void onMovieDataItemClick(int position) {
-                requestPresenterToProcessDataClick(position);
+                requestHandlingOfItemClickToPresenter(position);
             }
         });
-
-        movieListRecyclerView.setAdapter(movieListAdapter);
-        adapterView = movieListAdapter;
-        presenter.setAdapterModel(movieListAdapter);
     }
 
 
     @Override
     public void refreshMovieList() {
-        processingMovieListRefresh();
+        handlingMovieListRefresh();
+    }
+
+    @Override
+    public void hideKeyboard() {
+        handlingHideKeyboard();
     }
 
     @Override
     public void moveToMovieWeb(String uri) {
-        processingMoveToMovieWeb(uri);
+        handlingMoveToMovieWeb(uri);
     }
 
     @Override
     public void showErrorMessage(String errorMessage) {
-        processingShowErrorMessage(errorMessage);
+        handlingShowErrorMessage(errorMessage);
     }
 
 
-    private void requestMovieDataToPresenter() {
+    private void requestInitialMovieDataToPresenter() {
         String movieTitle = movieTitleEditText.getText().toString();
 
-        presenter.loadMovieData(movieTitle);
+        presenter.requestInitialMovieData(movieTitle);
     }
 
-    private void requestPresenterToProcessDataClick(int position) {
-        presenter.movieDataClick(position);
+    private void requestHandlingOfItemClickToPresenter(int position) {
+        presenter.requestHandlingOfItemClick(position);
     }
 
-    private void processingMovieListRefresh() {
+    private void handlingMovieListRefresh() {
         adapterView.refresh();
     }
 
-    private void processingMoveToMovieWeb(String uri) {
+    private void handlingHideKeyboard() {
+        KeyboardUtil.hideKeyboard(this);
+    }
+
+    private void handlingMoveToMovieWeb(String uri) {
         Uri movieWebUri = Uri.parse(uri);
         Intent movieWebIntent = new Intent(Intent.ACTION_VIEW, movieWebUri);
 
         startActivity(movieWebIntent);
     }
 
-    private void processingShowErrorMessage(String errorMessage) {
+    private void handlingShowErrorMessage(String errorMessage) {
         Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show();
     }
 }

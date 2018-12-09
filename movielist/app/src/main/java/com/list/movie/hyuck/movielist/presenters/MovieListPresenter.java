@@ -16,8 +16,8 @@ public class MovieListPresenter implements MovieListContract.Presenter {
     private MovieListContract.View movieListView;
     private MovieListAdapterContract.Model adapterModel;
     private MovieListModel movieListModel;
-
     private Resources resources;
+
 
     public MovieListPresenter(Context context) {
         init(context);
@@ -27,6 +27,7 @@ public class MovieListPresenter implements MovieListContract.Presenter {
         movieListModel = new MovieListModel(context);
         resources = context.getResources();
     }
+
 
     @Override
     public void setView(MovieListContract.View view) {
@@ -39,63 +40,98 @@ public class MovieListPresenter implements MovieListContract.Presenter {
     }
 
     @Override
-    public void loadMovieData(String movieTitle) {
-        processingLoadMovieData(movieTitle);
+    public void requestInitialMovieData(String movieTitle) {
+        handlingRequestInitialMovieData(movieTitle);
     }
 
     @Override
-    public void movieDataClick(int position) {
-        processingMovieDataClick(position);
+    public void requestHandlingOfItemClick(int position) {
+        handlingMovieDataClick(position);
     }
 
 
-    private void processingLoadMovieData(String movieTitle) {
+    private void requestInitialMovieDataToModel(String movieTitle) {
         movieListModel.loadMovieData(movieTitle, 1, new OnMovieDataLoadListener() {
             @Override
             public void onSuccess(ArrayList<MovieData> movieDataArrayList) {
-                processingLoadMovieData(movieDataArrayList);
+                handlingLoadMovieData(movieDataArrayList);
             }
 
             @Override
             public void onApplicationError(String errorMessage) {
-                processingOnApplicationError(errorMessage);
+                handlingApplicationError(errorMessage);
             }
 
             @Override
             public void onNetworkNotConnectingError() {
-                processingOnNetworkNotConnectingError();
+                handlingNetworkNotConnectingError();
             }
 
             @Override
             public void onServerSystemError(String errorMessage) {
-                processingOnServerSystemError(errorMessage);
+                handlingServerSystemError(errorMessage);
             }
 
             @Override
             public void onNoMoreData() {
-                processingOnNoMoreData();
+                handlingNoMoreData();
             }
 
             @Override
             public void onNonExistentWordError() {
-                processingOnNonExistentWordError();
+                handlingNonExistentWordError();
             }
         });
     }
 
+    private void handlingRequestInitialMovieData(String movieTitle) {
+        movieListView.hideKeyboard();
 
-    private void processingLoadMovieData(ArrayList<MovieData> movieDataList) {
+        requestInitialMovieDataToModel(movieTitle);
+    }
+
+    private void handlingLoadMovieData(ArrayList<MovieData> movieDataList) {
         manufactureUserRatingOfMovieDataList(movieDataList);
 
         adapterModel.setMovieDataList(movieDataList);
         movieListView.refreshMovieList();
     }
 
-    private void processingMovieDataClick(int position) {
+    private void handlingMovieDataClick(int position) {
         MovieData movieData = adapterModel.getMovieData(position);
         String movieLink = movieData.getLink();
 
         movieListView.moveToMovieWeb(movieLink);
+    }
+
+    private void handlingApplicationError(String errorMessage) {
+        String showMessage = String.format(resources.getString(R.string.movie_data_load_application_error), errorMessage);
+
+        movieListView.showErrorMessage(showMessage);
+    }
+
+    private void handlingServerSystemError(String errorMessage) {
+        String showMessage = String.format(resources.getString(R.string.movie_data_load_system_error), errorMessage);
+
+        movieListView.showErrorMessage(showMessage);
+    }
+
+    private void handlingNetworkNotConnectingError() {
+        String showMessage = resources.getString(R.string.movie_data_network_not_connecting_error);
+
+        movieListView.showErrorMessage(showMessage);
+    }
+
+    private void handlingNoMoreData() {
+        String showMessage = resources.getString(R.string.movie_data_no_more_data_error);
+
+        movieListView.showErrorMessage(showMessage);
+    }
+
+    private void handlingNonExistentWordError() {
+        String showMessage = resources.getString(R.string.movie_data_non_existent_word_error);
+
+        movieListView.showErrorMessage(showMessage);
     }
 
     private void manufactureUserRatingOfMovieDataList(ArrayList<MovieData> movieDataList) {
@@ -103,35 +139,5 @@ public class MovieListPresenter implements MovieListContract.Presenter {
         for(int i=0; i<movieDataList.size(); i++) {
             movieDataList.get(i).manufactureUserRating(startCountOfRatingBar);
         }
-    }
-
-    private void processingOnApplicationError(String errorMessage) {
-        String showMessage = String.format(resources.getString(R.string.movie_data_load_application_error), errorMessage);
-
-        movieListView.showErrorMessage(showMessage);
-    }
-
-    private void processingOnServerSystemError(String errorMessage) {
-        String showMessage = String.format(resources.getString(R.string.movie_data_load_system_error), errorMessage);
-
-        movieListView.showErrorMessage(showMessage);
-    }
-
-    private void processingOnNetworkNotConnectingError() {
-        String showMessage = resources.getString(R.string.movie_data_network_not_connecting_error);
-
-        movieListView.showErrorMessage(showMessage);
-    }
-
-    private void processingOnNoMoreData() {
-        String showMessage = resources.getString(R.string.movie_data_no_more_data_error);
-
-        movieListView.showErrorMessage(showMessage);
-    }
-
-    private void processingOnNonExistentWordError() {
-        String showMessage = resources.getString(R.string.movie_data_non_existent_word_error);
-
-        movieListView.showErrorMessage(showMessage);
     }
 }

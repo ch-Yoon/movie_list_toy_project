@@ -3,6 +3,7 @@ package com.list.movie.hyuck.movielist.adapters;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,6 @@ import java.util.ArrayList;
 
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapterViewHolder> implements MovieListAdapterContract.View, MovieListAdapterContract.Model {
     private OnMovieDataItemClickListener onMovieDataItemClickListener;
-
     private Context context;
     private ArrayList<MovieData> movieDataList;
 
@@ -38,15 +38,20 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapterViewH
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View itemView = layoutInflater.inflate(R.layout.movie_list_recycler_view_item, viewGroup, false);
 
-        return new MovieListAdapterViewHolder(itemView, context);
+        MovieListAdapterViewHolder movieListAdapterViewHolder = new MovieListAdapterViewHolder(itemView, context);
+        movieListAdapterViewHolder.setOnMovieDataItemClickListener(onMovieDataItemClickListener);
+
+        return movieListAdapterViewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull MovieListAdapterViewHolder holder, int position) {
+        long start = System.currentTimeMillis();
         MovieData movieData = movieDataList.get(position);
 
         holder.setMovieData(movieData);
-        holder.setOnMovieDataItemClickListener(onMovieDataItemClickListener);
+        long end = System.currentTimeMillis();
+        Log.d("testtest",end-start+"");
     }
 
     @Override
@@ -54,15 +59,14 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapterViewH
         return movieDataList.size();
     }
 
-
-    public void setOnMovieDataItemClickListener(OnMovieDataItemClickListener onMovieDataItemClickListener) {
-        this.onMovieDataItemClickListener = onMovieDataItemClickListener;
-    }
-
-
     @Override
     public void refresh() {
         notifyDataSetChanged();
+    }
+
+    @Override
+    public void setOnMovieDataItemClickListener(OnMovieDataItemClickListener onMovieDataItemClickListener) {
+        this.onMovieDataItemClickListener = onMovieDataItemClickListener;
     }
 
     @Override

@@ -21,6 +21,15 @@ public class VolleySingleton implements ServerCommunicator {
     private static VolleySingleton ourInstance = null;
     private RequestQueue requestQueue;
 
+
+    private VolleySingleton(Context context) {
+        initRequestQueue(context);
+    }
+
+    private void initRequestQueue(Context context) {
+        requestQueue = Volley.newRequestQueue(context);
+    }
+
     public static synchronized  VolleySingleton getInstance(Context context) {
         if(ourInstance == null) {
             ourInstance = new VolleySingleton(context);
@@ -29,30 +38,27 @@ public class VolleySingleton implements ServerCommunicator {
         return ourInstance;
     }
 
-    private VolleySingleton(Context context) {
-        createRequestQueue(context);
-    }
-
-    private void createRequestQueue(Context context) {
-        requestQueue = Volley.newRequestQueue(context);
-    }
 
     @Override
-    public void requestData(String url, final String clientId, final String clientSecret, final OnServerRequestListener onServerRequestListener) {
+    public void requestData(String uri, final String clientId, final String clientSecret, final OnServerRequestListener onServerRequestListener) {
+        handlingRequestData(uri, clientId, clientSecret, onServerRequestListener);
+    }
+
+
+    private void handlingRequestData(String uri, final String clientId, final String clientSecret, final OnServerRequestListener onServerRequestListener) {
         StringRequest request = new StringRequest(
                 Request.Method.GET,
-                url,
+                uri,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        processingResponseData(onServerRequestListener, response);
+                        handlingResponseData(onServerRequestListener, response);
                     }
                 },
-
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        processingError(error, onServerRequestListener);
+                        handlingError(error, onServerRequestListener);
                     }
                 }
         ) {
@@ -70,23 +76,23 @@ public class VolleySingleton implements ServerCommunicator {
         requestQueue.add(request);
     }
 
-    private void processingResponseData(OnServerRequestListener onServerRequestListener, String response) {
+    private void handlingResponseData(OnServerRequestListener onServerRequestListener, String response) {
         if(onServerRequestListener != null) {
             onServerRequestListener.onResult(response);
         }
     }
 
-    private void processingError(VolleyError volleyError, OnServerRequestListener onServerRequestListener) {
+    private void handlingError(VolleyError volleyError, OnServerRequestListener onServerRequestListener) {
         if(onServerRequestListener != null) {
-            LoadError error = extractErrorCode(volleyError);
+            LoadError error = extractLoadError(volleyError);
 
             onServerRequestListener.onError(error);
         }
     }
 
-    private LoadError extractErrorCode(VolleyError volleyError) {
+    private LoadError extractLoadError(VolleyError volleyError) {
         String errorCode = convertToErrorCode(volleyError);
-        LoadError error = convertToRequestError(errorCode);
+        LoadError error = convertToLoadError(errorCode);
 
         return error;
     }
@@ -103,7 +109,7 @@ public class VolleySingleton implements ServerCommunicator {
         }
     }
 
-    private LoadError convertToRequestError(String errorCode) {
+    private LoadError convertToLoadError(String errorCode) {
         LoadError error;
         try {
             error = LoadError.valueOf(errorCode);

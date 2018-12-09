@@ -13,23 +13,22 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
-import com.list.movie.hyuck.movielist.R;
 
 
 public class GlideLoader implements ImageLoader {
 
     @Override
-    public void imageLoad(Context context, String url, ImageView targetView) {
-        RequestManager requestManager = Glide.with(context);
-        imageLoad(requestManager, url, targetView);
+    public void imageLoad(Context context, String uri, ImageView targetView) {
+        handlingImageLoad(context, uri, targetView);
     }
 
-    private void imageLoad(RequestManager requestManager, String url, ImageView targetView) {
-        requestManager.asBitmap()
-                .load(url)
+
+    private void handlingImageLoad(Context context, String uri, ImageView targetView) {
+        Glide.with(context)
+                .asBitmap()
+                .load(uri)
                 .apply(new RequestOptions()
                         .format(DecodeFormat.PREFER_RGB_565)
-                        .error(R.drawable.no_image)
                         .centerCrop())
                 .listener(new RequestListener<Bitmap>() {
                     @Override
