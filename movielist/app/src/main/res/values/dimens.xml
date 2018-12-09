@@ -3,7 +3,15 @@
     <!-- movie list dimens -->
     <dimen name="movie_list_movie_title_edit_text_margin">10dp</dimen>
     <dimen name="movie_list_movie_title_edit_text_padding">15dp</dimen>
-    <dimen name="movie_list_movie_title_edit_text_text_size">16sp</dimen>
+    <dimen name="movie_list_movie_title_edit_text_text_size">18sp</dimen>
     <dimen name="movie_list_movie_data_request_button_margin">10dp</dimen>
     <dimen name="movie_list_recycler_view_margin">10dp</dimen>
+
+    <!-- movie list recycler view item dimens -->
+    <dimen name="movie_list_recycler_view_parent_bottom_padding">10dp</dimen>
+    <dimen name="movie_list_recycler_view_poster_margin">10dp</dimen>
+    <dimen name="movie_list_recycler_view_text_view_right_margin">10dp</dimen>
+    <dimen name="movie_list_recycler_view_text_view_left_margin">20dp</dimen>
+    <dimen name="movie_list_recycler_view_text_view_top_margin">5dp</dimen>
+    <dimen name="movie_list_recycler_view_text_size">16sp</dimen>
 </resources>
