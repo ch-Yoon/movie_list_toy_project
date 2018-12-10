@@ -1,4 +1,4 @@
-package com.list.movie.hyuck.movielist.items;
+package com.list.movie.hyuck.movielist.movielist.model.items;
 
 public class MovieData {
     private String title;
@@ -9,7 +9,6 @@ public class MovieData {
     private String director;
     private String actor;
 
-
     public MovieData(String title, String link, String image, float userRating, String pubDate, String director, String actor) {
         this.title = title;
         this.link = link;
@@ -19,7 +18,6 @@ public class MovieData {
         this.director = director;
         this.actor = actor;
     }
-
 
     public void manufactureUserRating(float maximumRating) {
         final float defaultMaximumRating = 10f;

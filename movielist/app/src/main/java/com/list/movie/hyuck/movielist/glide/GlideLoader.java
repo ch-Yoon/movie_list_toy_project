@@ -1,4 +1,4 @@
-package com.list.movie.hyuck.movielist.loaders;
+package com.list.movie.hyuck.movielist.glide;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.engine.GlideException;
@@ -21,7 +20,6 @@ public class GlideLoader implements ImageLoader {
     public void imageLoad(Context context, String uri, ImageView targetView) {
         handlingImageLoad(context, uri, targetView);
     }
-
 
     private void handlingImageLoad(Context context, String uri, ImageView targetView) {
         Glide.with(context)

@@ -1,4 +1,4 @@
-package com.list.movie.hyuck.movielist.items;
+package com.list.movie.hyuck.movielist.movielist.model.items;
 
 import java.util.ArrayList;
 

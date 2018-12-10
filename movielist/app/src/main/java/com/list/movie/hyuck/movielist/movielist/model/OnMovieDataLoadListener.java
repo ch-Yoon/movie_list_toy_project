@@ -1,6 +1,6 @@
-package com.list.movie.hyuck.movielist.listeners;
+package com.list.movie.hyuck.movielist.movielist.model;
 
-import com.list.movie.hyuck.movielist.items.MovieData;
+import com.list.movie.hyuck.movielist.movielist.model.items.MovieData;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package com.list.movie.hyuck.movielist.loaders;
+package com.list.movie.hyuck.movielist.glide;
 
 import android.content.Context;
 import android.widget.ImageView;

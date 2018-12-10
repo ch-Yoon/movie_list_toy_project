@@ -1,4 +1,4 @@
-package com.list.movie.hyuck.movielist.modules;
+package com.list.movie.hyuck.movielist.volley;
 
 import android.content.Context;
 
@@ -8,8 +8,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.list.movie.hyuck.movielist.constants.LoadError;
-import com.list.movie.hyuck.movielist.listeners.OnServerRequestListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,7 +19,6 @@ public class VolleySingleton implements ServerCommunicator {
     private static VolleySingleton ourInstance = null;
     private RequestQueue requestQueue;
 
-
     private VolleySingleton(Context context) {
         initRequestQueue(context);
     }
@@ -30,7 +27,7 @@ public class VolleySingleton implements ServerCommunicator {
         requestQueue = Volley.newRequestQueue(context);
     }
 
-    public static synchronized  VolleySingleton getInstance(Context context) {
+    public static synchronized VolleySingleton getInstance(Context context) {
         if(ourInstance == null) {
             ourInstance = new VolleySingleton(context);
         }
@@ -38,12 +35,10 @@ public class VolleySingleton implements ServerCommunicator {
         return ourInstance;
     }
 
-
     @Override
     public void requestData(String uri, final String clientId, final String clientSecret, final OnServerRequestListener onServerRequestListener) {
         handlingRequestData(uri, clientId, clientSecret, onServerRequestListener);
     }
-
 
     private void handlingRequestData(String uri, final String clientId, final String clientSecret, final OnServerRequestListener onServerRequestListener) {
         StringRequest request = new StringRequest(
@@ -84,39 +79,9 @@ public class VolleySingleton implements ServerCommunicator {
 
     private void handlingError(VolleyError volleyError, OnServerRequestListener onServerRequestListener) {
         if(onServerRequestListener != null) {
-            LoadError error = extractLoadError(volleyError);
+            String errorMessage = new String(volleyError.networkResponse.data);
 
-            onServerRequestListener.onError(error);
+            onServerRequestListener.onError(errorMessage);
         }
-    }
-
-    private LoadError extractLoadError(VolleyError volleyError) {
-        String errorCode = convertToErrorCode(volleyError);
-        LoadError error = convertToLoadError(errorCode);
-
-        return error;
-    }
-
-    private String convertToErrorCode(VolleyError volleyError) {
-        String errorMessageJSONFormat = new String(volleyError.networkResponse.data);
-        try {
-            JSONObject jsonObject = new JSONObject(errorMessageJSONFormat);
-            String errorCode = jsonObject.getString("errorCode");
-
-            return errorCode;
-        } catch (JSONException e) {
-            return "";
-        }
-    }
-
-    private LoadError convertToLoadError(String errorCode) {
-        LoadError error;
-        try {
-            error = LoadError.valueOf(errorCode);
-        } catch (IllegalArgumentException illegalArgumentException) {
-            error = LoadError.UNKNOWN_ERROR;
-        }
-
-        return error;
     }
 }

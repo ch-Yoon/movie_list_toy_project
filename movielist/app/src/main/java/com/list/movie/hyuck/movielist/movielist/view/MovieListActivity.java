@@ -1,4 +1,4 @@
-package com.list.movie.hyuck.movielist.activities;
+package com.list.movie.hyuck.movielist.movielist.view;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -12,18 +12,18 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.list.movie.hyuck.movielist.R;
-import com.list.movie.hyuck.movielist.adapters.MovieListAdapter;
-import com.list.movie.hyuck.movielist.contracts.MovieListAdapterContract;
-import com.list.movie.hyuck.movielist.contracts.MovieListContract;
-import com.list.movie.hyuck.movielist.listeners.OnMovieDataItemClickListener;
-import com.list.movie.hyuck.movielist.presenters.MovieListPresenter;
+import com.list.movie.hyuck.movielist.movielist.adapter.MovieListAdapter;
+import com.list.movie.hyuck.movielist.movielist.adapter.MovieListAdapterView;
+import com.list.movie.hyuck.movielist.movielist.adapter.viewholder.OnMovieDataDisplayPositionListener;
+import com.list.movie.hyuck.movielist.movielist.adapter.viewholder.OnMovieDataItemClickListener;
+import com.list.movie.hyuck.movielist.movielist.presenter.MovieListPresenter;
+import com.list.movie.hyuck.movielist.movielist.presenter.MovieListPresenterImpl;
 import com.list.movie.hyuck.movielist.utils.KeyboardUtil;
 
-public class MovieListActivity extends AppCompatActivity implements MovieListContract.View{
-    private MovieListContract.Presenter presenter;
-    private MovieListAdapterContract.View adapterView;
+public class MovieListActivity extends AppCompatActivity implements MovieListView{
+    private MovieListPresenter presenter;
+    private MovieListAdapterView adapterView;
     private EditText movieTitleEditText;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +55,8 @@ public class MovieListActivity extends AppCompatActivity implements MovieListCon
         super.onStop();
     }
 
-
     private void initPresenter() {
-        presenter = new MovieListPresenter(this);
+        presenter = new MovieListPresenterImpl(this);
         presenter.setView(this);
     }
 
@@ -89,8 +88,14 @@ public class MovieListActivity extends AppCompatActivity implements MovieListCon
                 requestHandlingOfItemClickToPresenter(position);
             }
         });
-    }
 
+        adapterView.setOnMovieDataDisplayPositionListener(new OnMovieDataDisplayPositionListener() {
+            @Override
+            public void onMovieDataDisplayPosition(int position) {
+                requestPossibleAdditionalMovieData(position);
+            }
+        });
+    }
 
     @Override
     public void refreshMovieList() {
@@ -112,11 +117,14 @@ public class MovieListActivity extends AppCompatActivity implements MovieListCon
         handlingShowErrorMessage(errorMessage);
     }
 
-
     private void requestInitialMovieDataToPresenter() {
         String movieTitle = movieTitleEditText.getText().toString();
 
         presenter.requestInitialMovieData(movieTitle);
+    }
+
+    private void requestPossibleAdditionalMovieData(int displayPosition) {
+        presenter.requestPossibleAdditionalMovieData(displayPosition);
     }
 
     private void requestHandlingOfItemClickToPresenter(int position) {

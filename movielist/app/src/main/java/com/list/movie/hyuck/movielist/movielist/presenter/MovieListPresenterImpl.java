@@ -1,47 +1,55 @@
-package com.list.movie.hyuck.movielist.presenters;
+package com.list.movie.hyuck.movielist.movielist.presenter;
 
 import android.content.Context;
 import android.content.res.Resources;
 
 import com.list.movie.hyuck.movielist.R;
-import com.list.movie.hyuck.movielist.contracts.MovieListAdapterContract;
-import com.list.movie.hyuck.movielist.contracts.MovieListContract;
-import com.list.movie.hyuck.movielist.listeners.OnMovieDataLoadListener;
-import com.list.movie.hyuck.movielist.items.MovieData;
-import com.list.movie.hyuck.movielist.models.MovieListModel;
+import com.list.movie.hyuck.movielist.movielist.adapter.MovieListAdapterModel;
+import com.list.movie.hyuck.movielist.movielist.model.OnMovieDataLoadListener;
+import com.list.movie.hyuck.movielist.movielist.model.items.MovieData;
+import com.list.movie.hyuck.movielist.movielist.model.MovieListModel;
+import com.list.movie.hyuck.movielist.movielist.presenter.manager.DataRequestManager;
+import com.list.movie.hyuck.movielist.movielist.presenter.manager.MovieRequest;
+import com.list.movie.hyuck.movielist.movielist.presenter.manager.OnDataLoadConfirmListener;
+import com.list.movie.hyuck.movielist.movielist.view.MovieListView;
 
 import java.util.ArrayList;
 
-public class MovieListPresenter implements MovieListContract.Presenter {
-    private MovieListContract.View movieListView;
-    private MovieListAdapterContract.Model adapterModel;
+public class MovieListPresenterImpl implements MovieListPresenter {
+    private MovieListView movieListView;
+    private MovieListAdapterModel adapterModel;
     private MovieListModel movieListModel;
+    private DataRequestManager dataRequestManager;
     private Resources resources;
 
-
-    public MovieListPresenter(Context context) {
+    public MovieListPresenterImpl(Context context) {
         init(context);
     }
 
     private void init(Context context) {
         movieListModel = new MovieListModel(context);
+        dataRequestManager = new DataRequestManager();
         resources = context.getResources();
     }
 
-
     @Override
-    public void setView(MovieListContract.View view) {
+    public void setView(MovieListView view) {
         this.movieListView = view;
     }
 
     @Override
-    public void setAdapterModel(MovieListAdapterContract.Model adapterModel) {
+    public void setAdapterModel(MovieListAdapterModel adapterModel) {
         this.adapterModel = adapterModel;
     }
 
     @Override
     public void requestInitialMovieData(String movieTitle) {
-        handlingRequestInitialMovieData(movieTitle);
+        confirmRequestToRequestManager(movieTitle);
+    }
+
+    @Override
+    public void requestPossibleAdditionalMovieData(int nowDisplayPosition) {
+        confirmRequestToRequestManager(nowDisplayPosition);
     }
 
     @Override
@@ -49,12 +57,32 @@ public class MovieListPresenter implements MovieListContract.Presenter {
         handlingMovieDataClick(position);
     }
 
-
-    private void requestInitialMovieDataToModel(String movieTitle) {
-        movieListModel.loadMovieData(movieTitle, 1, new OnMovieDataLoadListener() {
+    private void confirmRequestToRequestManager(String movieTitle) {
+        dataRequestManager.confirmInitialDataLoad(movieTitle, new OnDataLoadConfirmListener() {
             @Override
-            public void onSuccess(ArrayList<MovieData> movieDataArrayList) {
-                handlingLoadMovieData(movieDataArrayList);
+            public void onConfirm(MovieRequest movieRequest) {
+                requestMovieDataToModel(movieRequest);
+            }
+        });
+
+        movieListView.hideKeyboard();
+        adapterModel.clear();
+    }
+
+    private void confirmRequestToRequestManager(int nowDisplayPosition) {
+        dataRequestManager.confirmAdditionalDataLoad(nowDisplayPosition, adapterModel.getCount(), new OnDataLoadConfirmListener() {
+            @Override
+            public void onConfirm(MovieRequest movieRequest) {
+                requestMovieDataToModel(movieRequest);
+            }
+        });
+    }
+
+    private void requestMovieDataToModel(final MovieRequest movieRequest) {
+        movieListModel.loadMovieData(movieRequest, new OnMovieDataLoadListener() {
+            @Override
+            public void onSuccess(ArrayList<MovieData> movieDataList) {
+                handlingLoadMovieData(movieDataList, movieRequest.getLoadIndex());
             }
 
             @Override
@@ -84,16 +112,15 @@ public class MovieListPresenter implements MovieListContract.Presenter {
         });
     }
 
-    private void handlingRequestInitialMovieData(String movieTitle) {
-        movieListView.hideKeyboard();
-
-        requestInitialMovieDataToModel(movieTitle);
-    }
-
-    private void handlingLoadMovieData(ArrayList<MovieData> movieDataList) {
+    private void handlingLoadMovieData(ArrayList<MovieData> movieDataList, int loadIndex) {
         manufactureUserRatingOfMovieDataList(movieDataList);
 
-        adapterModel.setMovieDataList(movieDataList);
+        if(loadIndex == 1) {
+            adapterModel.setMovieDataList(movieDataList);
+        } else {
+            adapterModel.addMovieDataList(movieDataList);
+        }
+
         movieListView.refreshMovieList();
     }
 
@@ -136,6 +163,7 @@ public class MovieListPresenter implements MovieListContract.Presenter {
 
     private void manufactureUserRatingOfMovieDataList(ArrayList<MovieData> movieDataList) {
         final float startCountOfRatingBar = 5f;
+
         for(int i=0; i<movieDataList.size(); i++) {
             movieDataList.get(i).manufactureUserRating(startCountOfRatingBar);
         }

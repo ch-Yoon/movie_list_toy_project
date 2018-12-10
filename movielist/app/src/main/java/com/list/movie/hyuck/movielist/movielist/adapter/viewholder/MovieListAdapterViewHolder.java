@@ -1,4 +1,4 @@
-package com.list.movie.hyuck.movielist.adapters.viewholders;
+package com.list.movie.hyuck.movielist.movielist.adapter.viewholder;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -13,13 +13,13 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.list.movie.hyuck.movielist.R;
-import com.list.movie.hyuck.movielist.listeners.OnMovieDataItemClickListener;
-import com.list.movie.hyuck.movielist.items.MovieData;
-import com.list.movie.hyuck.movielist.loaders.GlideLoader;
-import com.list.movie.hyuck.movielist.loaders.ImageLoader;
+import com.list.movie.hyuck.movielist.movielist.model.items.MovieData;
+import com.list.movie.hyuck.movielist.glide.GlideLoader;
+import com.list.movie.hyuck.movielist.glide.ImageLoader;
 
 public class MovieListAdapterViewHolder extends RecyclerView.ViewHolder {
     private OnMovieDataItemClickListener onMovieDataItemClickListener;
+    private OnMovieDataDisplayPositionListener onMovieDataDisplayPositionListener;
     private ImageLoader imageLoader;
     private Context context;
     private ImageView movieImageView;
@@ -28,7 +28,6 @@ public class MovieListAdapterViewHolder extends RecyclerView.ViewHolder {
     private TextView moviePubDateTextView;
     private TextView movieDirectorTextView;
     private TextView movieActorTextView;
-
 
     public MovieListAdapterViewHolder(View itemView, Context context) {
         super(itemView);
@@ -56,15 +55,18 @@ public class MovieListAdapterViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-
     public void setOnMovieDataItemClickListener(OnMovieDataItemClickListener onMovieDataItemClickListener) {
         this.onMovieDataItemClickListener = onMovieDataItemClickListener;
     }
 
-    public void setMovieData(MovieData movieData) {
-        handlingMovieDataToView(movieData);
+    public void setOnMovieDataDisplayPositionListener(OnMovieDataDisplayPositionListener onMovieDataDisplayPositionListener) {
+        this.onMovieDataDisplayPositionListener = onMovieDataDisplayPositionListener;
     }
 
+    public void setMovieData(MovieData movieData) {
+        handlingMovieDataToView(movieData);
+        notifyPositionToListener();
+    }
 
     private void handlingMovieDataItemClick() {
         if(onMovieDataItemClickListener != null) {
@@ -82,6 +84,12 @@ public class MovieListAdapterViewHolder extends RecyclerView.ViewHolder {
             movieDirectorTextView.setText(movieData.getDirector());
             movieActorTextView.setText(movieData.getActor());
             imageLoader.imageLoad(context, movieData.getImage(), movieImageView);
+        }
+    }
+
+    private void notifyPositionToListener() {
+        if(onMovieDataDisplayPositionListener != null) {
+            onMovieDataDisplayPositionListener.onMovieDataDisplayPosition(getAdapterPosition());
         }
     }
 
