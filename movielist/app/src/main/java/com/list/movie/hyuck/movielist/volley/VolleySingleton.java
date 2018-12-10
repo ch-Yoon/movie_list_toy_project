@@ -8,6 +8,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.list.movie.hyuck.movielist.utils.NetworkUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,14 +18,16 @@ import java.util.Map;
 
 public class VolleySingleton implements ServerCommunicator {
     private static VolleySingleton ourInstance = null;
+    private Context applicationContext;
     private RequestQueue requestQueue;
 
-    private VolleySingleton(Context context) {
-        initRequestQueue(context);
+    private VolleySingleton(Context applicationContext) {
+        initRequestQueue(applicationContext);
     }
 
-    private void initRequestQueue(Context context) {
-        requestQueue = Volley.newRequestQueue(context);
+    private void initRequestQueue(Context applicationContext) {
+        this.applicationContext = applicationContext;
+        requestQueue = Volley.newRequestQueue(applicationContext);
     }
 
     public static synchronized VolleySingleton getInstance(Context context) {
@@ -37,7 +40,11 @@ public class VolleySingleton implements ServerCommunicator {
 
     @Override
     public void requestData(String uri, final String clientId, final String clientSecret, final OnServerRequestListener onServerRequestListener) {
-        handlingRequestData(uri, clientId, clientSecret, onServerRequestListener);
+        if(NetworkUtil.isNetworkConnecting(applicationContext)) {
+            handlingRequestData(uri, clientId, clientSecret, onServerRequestListener);
+        } else {
+            onServerRequestListener.onNetworkNotConnecting();
+        }
     }
 
     private void handlingRequestData(String uri, final String clientId, final String clientSecret, final OnServerRequestListener onServerRequestListener) {

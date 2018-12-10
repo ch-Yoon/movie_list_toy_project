@@ -71,6 +71,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapterViewH
 
     @Override
     public void setMovieDataList(ArrayList<MovieData> movieDataArrayList) {
+        this.movieDataList.clear();
         this.movieDataList = movieDataArrayList;
     }
 

@@ -1,9 +1,7 @@
 package com.list.movie.hyuck.movielist.movielist.presenter;
 
 import android.content.Context;
-import android.content.res.Resources;
 
-import com.list.movie.hyuck.movielist.R;
 import com.list.movie.hyuck.movielist.movielist.adapter.MovieListAdapterModel;
 import com.list.movie.hyuck.movielist.movielist.model.OnMovieDataLoadListener;
 import com.list.movie.hyuck.movielist.movielist.model.items.MovieData;
@@ -20,16 +18,14 @@ public class MovieListPresenterImpl implements MovieListPresenter {
     private MovieListAdapterModel adapterModel;
     private MovieListModel movieListModel;
     private DataRequestManager dataRequestManager;
-    private Resources resources;
 
-    public MovieListPresenterImpl(Context context) {
-        init(context);
+    public MovieListPresenterImpl(Context applicationContext) {
+        init(applicationContext);
     }
 
-    private void init(Context context) {
-        movieListModel = new MovieListModel(context);
+    private void init(Context applicationContext) {
+        movieListModel = new MovieListModel(applicationContext);
         dataRequestManager = new DataRequestManager();
-        resources = context.getResources();
     }
 
     @Override
@@ -45,6 +41,8 @@ public class MovieListPresenterImpl implements MovieListPresenter {
     @Override
     public void requestInitialMovieData(String movieTitle) {
         confirmRequestToRequestManager(movieTitle);
+        hideKeyboardOfView();
+        showProgressDialogOfView();
     }
 
     @Override
@@ -64,9 +62,6 @@ public class MovieListPresenterImpl implements MovieListPresenter {
                 requestMovieDataToModel(movieRequest);
             }
         });
-
-        movieListView.hideKeyboard();
-        adapterModel.clear();
     }
 
     private void confirmRequestToRequestManager(int nowDisplayPosition) {
@@ -113,15 +108,10 @@ public class MovieListPresenterImpl implements MovieListPresenter {
     }
 
     private void handlingLoadMovieData(ArrayList<MovieData> movieDataList, int loadIndex) {
-        manufactureUserRatingOfMovieDataList(movieDataList);
-
-        if(loadIndex == 1) {
-            adapterModel.setMovieDataList(movieDataList);
-        } else {
-            adapterModel.addMovieDataList(movieDataList);
-        }
-
-        movieListView.refreshMovieList();
+        manufactureMovieDataList(movieDataList);
+        pushMovieDataListToAdapterModel(movieDataList, loadIndex);
+        hideProgressDialogOfView();
+        viewRefresh();
     }
 
     private void handlingMovieDataClick(int position) {
@@ -132,40 +122,70 @@ public class MovieListPresenterImpl implements MovieListPresenter {
     }
 
     private void handlingApplicationError(String errorMessage) {
-        String showMessage = String.format(resources.getString(R.string.movie_data_load_application_error), errorMessage);
-
-        movieListView.showErrorMessage(showMessage);
+        movieListView.showApplicationError(errorMessage);
+        hideProgressDialogOfView();
     }
 
     private void handlingServerSystemError(String errorMessage) {
-        String showMessage = String.format(resources.getString(R.string.movie_data_load_system_error), errorMessage);
-
-        movieListView.showErrorMessage(showMessage);
+        movieListView.showServerSystemError(errorMessage);
+        hideProgressDialogOfView();
     }
 
     private void handlingNetworkNotConnectingError() {
-        String showMessage = resources.getString(R.string.movie_data_network_not_connecting_error);
-
-        movieListView.showErrorMessage(showMessage);
+        movieListView.showNetworkNotConnectingError();
+        hideProgressDialogOfView();
     }
 
     private void handlingNoMoreData() {
-        String showMessage = resources.getString(R.string.movie_data_no_more_data_error);
-
-        movieListView.showErrorMessage(showMessage);
+        movieListView.showNoMoreData();
+        hideProgressDialogOfView();
     }
 
     private void handlingNonExistentWordError() {
-        String showMessage = resources.getString(R.string.movie_data_non_existent_word_error);
-
-        movieListView.showErrorMessage(showMessage);
+        movieListView.showNonExistentWordError();
+        hideProgressDialogOfView();
     }
 
-    private void manufactureUserRatingOfMovieDataList(ArrayList<MovieData> movieDataList) {
-        final float startCountOfRatingBar = 5f;
+    private void manufactureMovieDataList(ArrayList<MovieData> movieDataList) {
+        ratingMaximumConversion(movieDataList);
+        applyBoldToTitleOfMovieDataList(movieDataList);
+    }
 
-        for(int i=0; i<movieDataList.size(); i++) {
-            movieDataList.get(i).manufactureUserRating(startCountOfRatingBar);
+    private void ratingMaximumConversion(ArrayList<MovieData> movieDataList) {
+        final float ratingMaximum = 5f;
+
+        for (int i = 0; i < movieDataList.size(); i++) {
+            movieDataList.get(i).ratingMaximumConversion(ratingMaximum);
         }
+    }
+
+    private void applyBoldToTitleOfMovieDataList(ArrayList<MovieData> movieDataList) {
+        for (int i = 0; i < movieDataList.size(); i++) {
+            movieDataList.get(i).movieTitleApplyToBold();
+        }
+    }
+
+    private void pushMovieDataListToAdapterModel(ArrayList<MovieData> movieDataList, int loadIndex) {
+        if (loadIndex == 1) {
+            adapterModel.setMovieDataList(movieDataList);
+        } else {
+            adapterModel.addMovieDataList(movieDataList);
+        }
+    }
+
+    private void viewRefresh() {
+        movieListView.refreshMovieList();
+    }
+
+    private void hideKeyboardOfView() {
+        movieListView.hideKeyboard();
+    }
+
+    private void hideProgressDialogOfView() {
+        movieListView.hideProgressDialog();
+    }
+
+    private void showProgressDialogOfView() {
+        movieListView.showProgressDialog();
     }
 }

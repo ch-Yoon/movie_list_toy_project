@@ -1,5 +1,9 @@
 package com.list.movie.hyuck.movielist.movielist.model.items;
 
+import android.text.SpannableStringBuilder;
+
+import com.list.movie.hyuck.movielist.utils.HtmlUtil;
+
 public class MovieData {
     private String title;
     private String link;
@@ -8,6 +12,7 @@ public class MovieData {
     private String pubDate;
     private String director;
     private String actor;
+    private SpannableStringBuilder applyBoldBuilder;
 
     public MovieData(String title, String link, String image, float userRating, String pubDate, String director, String actor) {
         this.title = title;
@@ -19,10 +24,18 @@ public class MovieData {
         this.actor = actor;
     }
 
-    public void manufactureUserRating(float maximumRating) {
+    public void movieTitleApplyToBold() {
+        applyBoldBuilder = HtmlUtil.applyBoldToText(title);
+    }
+
+    public void ratingMaximumConversion(float maximumRating) {
         final float defaultMaximumRating = 10f;
 
         userRating = userRating * (maximumRating / defaultMaximumRating);
+    }
+
+    public SpannableStringBuilder getBoldApliedTitle() {
+        return applyBoldBuilder;
     }
 
     public String getTitle() {

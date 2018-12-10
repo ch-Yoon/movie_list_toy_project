@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -16,6 +17,7 @@ import com.list.movie.hyuck.movielist.R;
 import com.list.movie.hyuck.movielist.movielist.model.items.MovieData;
 import com.list.movie.hyuck.movielist.glide.GlideLoader;
 import com.list.movie.hyuck.movielist.glide.ImageLoader;
+import com.list.movie.hyuck.movielist.utils.HtmlUtil;
 
 public class MovieListAdapterViewHolder extends RecyclerView.ViewHolder {
     private OnMovieDataItemClickListener onMovieDataItemClickListener;
@@ -78,7 +80,7 @@ public class MovieListAdapterViewHolder extends RecyclerView.ViewHolder {
 
     private void handlingMovieDataToView(MovieData movieData) {
         if(movieData != null) {
-            applyBoldToMovieTitle(movieData.getTitle());
+            movieTitleTextView.setText(movieData.getBoldApliedTitle());
             userRatingBar.setRating(movieData.getUserRating());
             moviePubDateTextView.setText(movieData.getPubDate());
             movieDirectorTextView.setText(movieData.getDirector());
@@ -90,32 +92,6 @@ public class MovieListAdapterViewHolder extends RecyclerView.ViewHolder {
     private void notifyPositionToListener() {
         if(onMovieDataDisplayPositionListener != null) {
             onMovieDataDisplayPositionListener.onMovieDataDisplayPosition(getAdapterPosition());
-        }
-    }
-
-    private void applyBoldToMovieTitle(String movieTitle) {
-        final String boldHeadText = "<b>";
-        final String boldTailText = "</b>";
-
-        if(movieTitle.contains(boldHeadText) && movieTitle.contains(boldTailText)) {
-            int boldHeadStartIndex = movieTitle.indexOf(boldHeadText);
-            int boldHeadEndIndex = boldHeadStartIndex + boldHeadText.length();
-            int boldTailStartIndex = movieTitle.indexOf(boldTailText);
-            int boldTailEndIndex = boldTailStartIndex + boldTailText.length();
-
-            String boldTextFront = movieTitle.substring(0, boldHeadStartIndex);
-            String boldText = movieTitle.substring(boldHeadEndIndex, boldTailStartIndex);
-            String boldTextEnd = movieTitle.substring(boldTailEndIndex);
-
-            SpannableStringBuilder stringBuilder = new SpannableStringBuilder();
-            stringBuilder.append(boldTextFront);
-            stringBuilder.append(boldText);
-            stringBuilder.append(boldTextEnd);
-            stringBuilder.setSpan(new StyleSpan(Typeface.BOLD), boldTextFront.length(), boldTextFront.length() + boldText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            movieTitleTextView.setText(stringBuilder);
-        } else {
-            movieTitleTextView.setText(movieTitle);
         }
     }
 }

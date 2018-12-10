@@ -4,5 +4,12 @@ public interface MovieListView {
     void refreshMovieList();
     void hideKeyboard();
     void moveToMovieWeb(String uri);
-    void showErrorMessage(String errorMessage);
+    void showApplicationError(String errorMessage);
+    void showNetworkNotConnectingError();
+    void showServerSystemError(String errorMessage);
+    void showNoMoreData();
+    void showNonExistentWordError();
+    void showProgressDialog();
+    void hideProgressDialog();
+
 }

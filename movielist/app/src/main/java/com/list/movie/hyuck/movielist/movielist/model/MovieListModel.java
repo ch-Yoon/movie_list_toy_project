@@ -1,8 +1,6 @@
 package com.list.movie.hyuck.movielist.movielist.model;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 
 import com.google.gson.Gson;
 import com.list.movie.hyuck.movielist.movielist.model.items.MovieData;
@@ -18,16 +16,14 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class MovieListModel {
-    private Context context;
     private ServerCommunicator serverCommunicator;
 
-    public MovieListModel(Context context) {
-        init(context);
+    public MovieListModel(Context applicationContext) {
+        init(applicationContext);
     }
 
-    private void init(Context context) {
-        this.context = context;
-        serverCommunicator = VolleySingleton.getInstance(context.getApplicationContext());
+    private void init(Context applicationContext) {
+        serverCommunicator = VolleySingleton.getInstance(applicationContext);
     }
 
     public void loadMovieData(MovieRequest movieRequest, OnMovieDataLoadListener onMovieDataLoadListener) {
@@ -35,24 +31,7 @@ public class MovieListModel {
     }
 
     private void handlingLoadMovieData(MovieRequest movieRequest, OnMovieDataLoadListener onMovieDataLoadListener) {
-        if(isNetworkConnecting()) {
-            loadMoveDataFromServer(movieRequest, onMovieDataLoadListener);
-        } else {
-            onMovieDataLoadListener.onNetworkNotConnectingError();
-        }
-    }
-
-    private boolean isNetworkConnecting() {
-        ConnectivityManager manager = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        if(manager != null) {
-            NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-
-            return networkInfo != null;
-        }
-
-        return false;
+        loadMoveDataFromServer(movieRequest, onMovieDataLoadListener);
     }
 
     private void loadMoveDataFromServer(final MovieRequest movieRequest, final OnMovieDataLoadListener onMovieDataLoadListener) {
@@ -68,6 +47,11 @@ public class MovieListModel {
             @Override
             public void onResult(String response) {
                 handlingRequestResultData(response, movieRequest, onMovieDataLoadListener);
+            }
+
+            @Override
+            public void onNetworkNotConnecting() {
+                handlingNetworkNotConnecting(onMovieDataLoadListener);
             }
 
             @Override
@@ -91,6 +75,10 @@ public class MovieListModel {
                 onMovieDataLoadListener.onNoMoreData();
             }
         }
+    }
+
+    private void handlingNetworkNotConnecting(OnMovieDataLoadListener onMovieDataLoadListener) {
+        onMovieDataLoadListener.onNetworkNotConnectingError();
     }
 
     private void handlingRequestErrorData(String errorMessageJSONFormat, OnMovieDataLoadListener onMovieDataLoadListener) {

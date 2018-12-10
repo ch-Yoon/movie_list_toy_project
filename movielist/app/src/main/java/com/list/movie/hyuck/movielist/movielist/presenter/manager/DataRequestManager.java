@@ -17,10 +17,7 @@ public class DataRequestManager {
 
     public void confirmInitialDataLoad(String movieTitle, OnDataLoadConfirmListener onDataLoadConfirmListener) {
         recordInitialRequest(movieTitle);
-
-        if(onDataLoadConfirmListener != null) {
-            onDataLoadConfirmListener.onConfirm(createMovieRequest());
-        }
+        requestConfirm(onDataLoadConfirmListener);
     }
 
     public void confirmAdditionalDataLoad(int displayPosition, int nowDataSize, OnDataLoadConfirmListener onDataLoadConfirmListener) {
@@ -28,10 +25,7 @@ public class DataRequestManager {
             synchronized (this) {
                 if (isPossibleAdditionalDataLoad(nowDataSize)) {
                     recordAdditionalRequest(nowDataSize);
-
-                    if(onDataLoadConfirmListener != null) {
-                        onDataLoadConfirmListener.onConfirm(createMovieRequest());
-                    }
+                    requestConfirm(onDataLoadConfirmListener);
                 }
             }
         }
@@ -58,6 +52,12 @@ public class DataRequestManager {
     private void recordAdditionalRequest(int nowDataSize) {
         requestLog.setDataSizeOfPreviousRequest(nowDataSize);
         requestLog.setExpectedDataSizeAfterRequest(nowDataSize + REQUEST_DATA_SIZE);
+    }
+
+    private void requestConfirm(OnDataLoadConfirmListener onDataLoadConfirmListener) {
+        if(onDataLoadConfirmListener != null) {
+            onDataLoadConfirmListener.onConfirm(createMovieRequest());
+        }
     }
 
     private MovieRequest createMovieRequest() {
