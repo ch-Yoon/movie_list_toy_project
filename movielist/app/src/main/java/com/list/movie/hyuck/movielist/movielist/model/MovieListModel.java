@@ -1,6 +1,7 @@
 package com.list.movie.hyuck.movielist.movielist.model;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.list.movie.hyuck.movielist.movielist.model.items.MovieData;

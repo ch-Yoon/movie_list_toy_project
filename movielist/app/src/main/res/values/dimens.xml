@@ -17,4 +17,7 @@
 
     <!-- custom progress dialog dimens -->
     <dimen name="custom_dialog_all_margin">10dp</dimen>
+
+    <!-- cyan toast dimens -->
+    <dimen name="cyan_toast_all_padding">10dp</dimen>
 </resources>
