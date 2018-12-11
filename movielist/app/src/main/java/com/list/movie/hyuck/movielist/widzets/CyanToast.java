@@ -1,4 +1,4 @@
-package com.list.movie.hyuck.movielist.utils;
+package com.list.movie.hyuck.movielist.widzets;
 
 import android.app.Activity;
 import android.content.Context;

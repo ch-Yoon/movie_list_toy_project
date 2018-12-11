@@ -18,8 +18,8 @@ import com.list.movie.hyuck.movielist.movielist.adapter.viewholder.OnMovieDataDi
 import com.list.movie.hyuck.movielist.movielist.adapter.viewholder.OnMovieDataItemClickListener;
 import com.list.movie.hyuck.movielist.movielist.presenter.MovieListPresenter;
 import com.list.movie.hyuck.movielist.movielist.presenter.MovieListPresenterImpl;
-import com.list.movie.hyuck.movielist.utils.CustomProgressDialog;
-import com.list.movie.hyuck.movielist.utils.CyanToast;
+import com.list.movie.hyuck.movielist.widzets.CustomProgressDialog;
+import com.list.movie.hyuck.movielist.widzets.CyanToast;
 import com.list.movie.hyuck.movielist.utils.KeyboardUtil;
 
 public class MovieListActivity extends AppCompatActivity implements MovieListView{
