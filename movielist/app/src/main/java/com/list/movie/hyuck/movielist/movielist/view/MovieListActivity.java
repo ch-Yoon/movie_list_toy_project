@@ -1,18 +1,15 @@
 package com.list.movie.hyuck.movielist.movielist.view;
 
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.list.movie.hyuck.movielist.R;
 import com.list.movie.hyuck.movielist.movielist.adapter.MovieListAdapter;
@@ -21,7 +18,8 @@ import com.list.movie.hyuck.movielist.movielist.adapter.viewholder.OnMovieDataDi
 import com.list.movie.hyuck.movielist.movielist.adapter.viewholder.OnMovieDataItemClickListener;
 import com.list.movie.hyuck.movielist.movielist.presenter.MovieListPresenter;
 import com.list.movie.hyuck.movielist.movielist.presenter.MovieListPresenterImpl;
-import com.list.movie.hyuck.movielist.utils.CustomProgressDialog;
+import com.list.movie.hyuck.movielist.widzets.CustomProgressDialog;
+import com.list.movie.hyuck.movielist.widzets.CyanToast;
 import com.list.movie.hyuck.movielist.utils.KeyboardUtil;
 
 public class MovieListActivity extends AppCompatActivity implements MovieListView{
@@ -189,6 +187,6 @@ public class MovieListActivity extends AppCompatActivity implements MovieListVie
     }
 
     private void showToastMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        CyanToast.showToastMessage(this, message);
     }
 }
