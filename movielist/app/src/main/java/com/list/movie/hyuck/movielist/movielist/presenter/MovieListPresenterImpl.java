@@ -29,8 +29,14 @@ public class MovieListPresenterImpl implements MovieListPresenter {
     }
 
     @Override
-    public void setView(MovieListView view) {
-        this.movieListView = view;
+    public void attachView(MovieListView movieListView) {
+        this.movieListView = movieListView;
+    }
+
+    @Override
+    public void detachView() {
+        movieListModel.requestCancelAll();
+        movieListView.hideProgressDialog();
     }
 
     @Override

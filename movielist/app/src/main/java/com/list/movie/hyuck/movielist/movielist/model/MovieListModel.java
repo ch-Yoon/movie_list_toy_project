@@ -31,6 +31,10 @@ public class MovieListModel {
         handlingLoadMovieData(movieRequest, onMovieDataLoadListener);
     }
 
+    public void requestCancelAll() {
+        serverCommunicator.cancelAll();
+    }
+
     private void handlingLoadMovieData(MovieRequest movieRequest, OnMovieDataLoadListener onMovieDataLoadListener) {
         loadMoveDataFromServer(movieRequest, onMovieDataLoadListener);
     }

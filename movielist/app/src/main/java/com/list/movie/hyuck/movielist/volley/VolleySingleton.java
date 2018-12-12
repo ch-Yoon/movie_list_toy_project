@@ -1,6 +1,7 @@
 package com.list.movie.hyuck.movielist.volley;
 
 import android.content.Context;
+import android.nfc.Tag;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -15,11 +16,16 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Handler;
 
 public class VolleySingleton implements ServerCommunicator {
+    private static final String TAG = "Request";
+
     private static VolleySingleton ourInstance = null;
     private Context applicationContext;
     private RequestQueue requestQueue;
+
+    android.os.Handler handler = new android.os.Handler();
 
     private VolleySingleton(Context applicationContext) {
         initRequestQueue(applicationContext);
@@ -47,14 +53,34 @@ public class VolleySingleton implements ServerCommunicator {
         }
     }
 
+    @Override
+    public void cancelAll() {
+        requestQueue.cancelAll(TAG);
+    }
+
     private void handlingRequestData(String uri, final String clientId, final String clientSecret, final OnServerRequestListener onServerRequestListener) {
         StringRequest request = new StringRequest(
                 Request.Method.GET,
                 uri,
                 new Response.Listener<String>() {
                     @Override
-                    public void onResponse(String response) {
-                        handlingResponseData(onServerRequestListener, response);
+                    public void onResponse(final String response) {
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    Thread.sleep(3000);
+                                    handler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            handlingResponseData(onServerRequestListener, response);
+                                        }
+                                    });
+                                } catch (Exception e) {
+                                }
+                            }
+                        }).start();
+
                     }
                 },
                 new Response.ErrorListener() {
@@ -75,7 +101,11 @@ public class VolleySingleton implements ServerCommunicator {
             }
         };
 
+        request.setTag(TAG);
+
         requestQueue.add(request);
+
+
     }
 
     private void handlingResponseData(OnServerRequestListener onServerRequestListener, String response) {
