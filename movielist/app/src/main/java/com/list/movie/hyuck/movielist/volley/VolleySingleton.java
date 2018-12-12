@@ -1,6 +1,7 @@
 package com.list.movie.hyuck.movielist.volley;
 
 import android.content.Context;
+import android.nfc.Tag;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -15,8 +16,11 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Handler;
 
 public class VolleySingleton implements ServerCommunicator {
+    private static final String TAG = "Request";
+
     private static VolleySingleton ourInstance = null;
     private Context applicationContext;
     private RequestQueue requestQueue;
@@ -47,6 +51,11 @@ public class VolleySingleton implements ServerCommunicator {
         }
     }
 
+    @Override
+    public void cancelAll() {
+        requestQueue.cancelAll(TAG);
+    }
+
     private void handlingRequestData(String uri, final String clientId, final String clientSecret, final OnServerRequestListener onServerRequestListener) {
         StringRequest request = new StringRequest(
                 Request.Method.GET,
@@ -75,7 +84,11 @@ public class VolleySingleton implements ServerCommunicator {
             }
         };
 
+        request.setTag(TAG);
+
         requestQueue.add(request);
+
+
     }
 
     private void handlingResponseData(OnServerRequestListener onServerRequestListener, String response) {

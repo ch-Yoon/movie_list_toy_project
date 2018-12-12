@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,11 +23,17 @@ import com.list.movie.hyuck.movielist.widzets.CustomProgressDialog;
 import com.list.movie.hyuck.movielist.widzets.CyanToast;
 import com.list.movie.hyuck.movielist.utils.KeyboardUtil;
 
+import java.nio.charset.Charset;
+
+
 public class MovieListActivity extends AppCompatActivity implements MovieListView{
+    private static final String MOVIE_TITLE_EDIT_TEXT_KEY = "MOVIE_TITLE_EDIT_TEXT_KEY";
+
     private MovieListPresenter presenter;
     private MovieListAdapterView adapterView;
-    private EditText movieTitleEditText;
     private CustomProgressDialog customProgressDialog;
+    private EditText movieTitleEditText;
+    private RecyclerView movieListRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,37 +42,50 @@ public class MovieListActivity extends AppCompatActivity implements MovieListVie
 
         initPresenter();
         initViews();
-        initAdapterView();
+        initAdapter();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
+        attachViewToPresenter();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+
+        detachViewToPresenter();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        handlingSaveInstance(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        handlingRestoreInstanceState(savedInstanceState);
     }
 
     private void initPresenter() {
         presenter = new MovieListPresenterImpl(getApplicationContext());
-        presenter.setView(this);
     }
 
     private void initViews() {
         customProgressDialog = new CustomProgressDialog(this);
+
         movieTitleEditText = findViewById(R.id.movieTitleEditText);
+
+        movieListRecyclerView = findViewById(R.id.movieListRecyclerView);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        movieListRecyclerView.setLayoutManager(layoutManager);
+        movieListRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         Button movieDataRequestButton = findViewById(R.id.movieDataRequestButton);
         movieDataRequestButton.setOnClickListener(new View.OnClickListener() {
@@ -76,12 +96,7 @@ public class MovieListActivity extends AppCompatActivity implements MovieListVie
         });
     }
 
-    private void initAdapterView() {
-        RecyclerView movieListRecyclerView = findViewById(R.id.movieListRecyclerView);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        movieListRecyclerView.setLayoutManager(layoutManager);
-        movieListRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-
+    private void initAdapter() {
         MovieListAdapter movieListAdapter = new MovieListAdapter(this);
         movieListRecyclerView.setAdapter(movieListAdapter);
         presenter.setAdapterModel(movieListAdapter);
@@ -157,6 +172,14 @@ public class MovieListActivity extends AppCompatActivity implements MovieListVie
         customProgressDialog.hide();
     }
 
+    private void attachViewToPresenter() {
+        presenter.attachView(this);
+    }
+
+    private void detachViewToPresenter() {
+        presenter.detachView();
+    }
+
     private void requestInitialMovieDataToPresenter() {
         String movieTitle = movieTitleEditText.getText().toString();
 
@@ -169,6 +192,20 @@ public class MovieListActivity extends AppCompatActivity implements MovieListVie
 
     private void requestHandlingOfItemClickToPresenter(int position) {
         presenter.requestHandlingOfItemClick(position);
+    }
+
+    private void handlingRestoreInstanceState(Bundle savedInstanceState) {
+        String movieTile = savedInstanceState.getString(MOVIE_TITLE_EDIT_TEXT_KEY);
+        movieTitleEditText.setText(movieTile);
+
+        presenter.onRestoreInstanceState(savedInstanceState);
+    }
+
+    private void handlingSaveInstance(Bundle outState) {
+        String movieTitle = movieTitleEditText.getText().toString();
+        outState.putString(MOVIE_TITLE_EDIT_TEXT_KEY, movieTitle);
+
+        presenter.onSaveInstanceState(outState);
     }
 
     private void handlingMovieListRefresh() {

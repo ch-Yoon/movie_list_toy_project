@@ -81,6 +81,11 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapterViewH
     }
 
     @Override
+    public ArrayList<MovieData> getMovieDataList() {
+        return movieDataList;
+    }
+
+    @Override
     public MovieData getMovieData(int position) {
         return movieDataList.get(position);
     }

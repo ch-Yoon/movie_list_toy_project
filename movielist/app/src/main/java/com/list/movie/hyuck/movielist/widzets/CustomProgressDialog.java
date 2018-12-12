@@ -28,6 +28,7 @@ public class CustomProgressDialog {
     public void hide() {
         if(progress != null && progress.isShowing()) {
             progress.dismiss();
+            progress = null;
         }
     }
 
