@@ -17,14 +17,14 @@ import com.list.movie.hyuck.movielist.movielist.adapter.MovieListAdapter;
 import com.list.movie.hyuck.movielist.movielist.adapter.MovieListAdapterView;
 import com.list.movie.hyuck.movielist.movielist.adapter.viewholder.OnMovieDataDisplayPositionListener;
 import com.list.movie.hyuck.movielist.movielist.adapter.viewholder.OnMovieDataItemClickListener;
-import com.list.movie.hyuck.movielist.movielist.model.items.MovieData;
 import com.list.movie.hyuck.movielist.movielist.presenter.MovieListPresenter;
 import com.list.movie.hyuck.movielist.movielist.presenter.MovieListPresenterImpl;
 import com.list.movie.hyuck.movielist.widzets.CustomProgressDialog;
 import com.list.movie.hyuck.movielist.widzets.CyanToast;
 import com.list.movie.hyuck.movielist.utils.KeyboardUtil;
 
-import java.util.ArrayList;
+import java.nio.charset.Charset;
+
 
 public class MovieListActivity extends AppCompatActivity implements MovieListView{
     private static final String MOVIE_TITLE_EDIT_TEXT_KEY = "MOVIE_TITLE_EDIT_TEXT_KEY";
