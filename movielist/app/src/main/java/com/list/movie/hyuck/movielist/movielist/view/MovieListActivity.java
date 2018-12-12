@@ -17,13 +17,18 @@ import com.list.movie.hyuck.movielist.movielist.adapter.MovieListAdapter;
 import com.list.movie.hyuck.movielist.movielist.adapter.MovieListAdapterView;
 import com.list.movie.hyuck.movielist.movielist.adapter.viewholder.OnMovieDataDisplayPositionListener;
 import com.list.movie.hyuck.movielist.movielist.adapter.viewholder.OnMovieDataItemClickListener;
+import com.list.movie.hyuck.movielist.movielist.model.items.MovieData;
 import com.list.movie.hyuck.movielist.movielist.presenter.MovieListPresenter;
 import com.list.movie.hyuck.movielist.movielist.presenter.MovieListPresenterImpl;
 import com.list.movie.hyuck.movielist.widzets.CustomProgressDialog;
 import com.list.movie.hyuck.movielist.widzets.CyanToast;
 import com.list.movie.hyuck.movielist.utils.KeyboardUtil;
 
+import java.util.ArrayList;
+
 public class MovieListActivity extends AppCompatActivity implements MovieListView{
+    private static final String MOVIE_TITLE_EDIT_TEXT_KEY = "MOVIE_TITLE_EDIT_TEXT_KEY";
+
     private MovieListPresenter presenter;
     private MovieListAdapterView adapterView;
     private CustomProgressDialog customProgressDialog;
@@ -52,6 +57,20 @@ public class MovieListActivity extends AppCompatActivity implements MovieListVie
         super.onStop();
 
         detachViewToPresenter();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        handlingSaveInstance(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        handlingRestoreInstanceState(savedInstanceState);
     }
 
     private void initPresenter() {
@@ -173,6 +192,20 @@ public class MovieListActivity extends AppCompatActivity implements MovieListVie
 
     private void requestHandlingOfItemClickToPresenter(int position) {
         presenter.requestHandlingOfItemClick(position);
+    }
+
+    private void handlingRestoreInstanceState(Bundle savedInstanceState) {
+        String movieTile = savedInstanceState.getString(MOVIE_TITLE_EDIT_TEXT_KEY);
+        movieTitleEditText.setText(movieTile);
+
+        presenter.onRestoreInstanceState(savedInstanceState);
+    }
+
+    private void handlingSaveInstance(Bundle outState) {
+        String movieTitle = movieTitleEditText.getText().toString();
+        outState.putString(MOVIE_TITLE_EDIT_TEXT_KEY, movieTitle);
+
+        presenter.onSaveInstanceState(outState);
     }
 
     private void handlingMovieListRefresh() {

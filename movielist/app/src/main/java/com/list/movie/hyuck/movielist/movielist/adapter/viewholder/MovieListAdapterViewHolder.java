@@ -80,7 +80,7 @@ public class MovieListAdapterViewHolder extends RecyclerView.ViewHolder {
 
     private void handlingMovieDataToView(MovieData movieData) {
         if(movieData != null) {
-            movieTitleTextView.setText(movieData.getBoldApliedTitle());
+            movieTitleTextView.setText(movieData.getApplyBoldBuilder());
             userRatingBar.setRating(movieData.getUserRating());
             moviePubDateTextView.setText(movieData.getPubDate());
             movieDirectorTextView.setText(movieData.getDirector());

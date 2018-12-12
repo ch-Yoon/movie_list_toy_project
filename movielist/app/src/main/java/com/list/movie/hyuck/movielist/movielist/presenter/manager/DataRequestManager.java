@@ -1,6 +1,10 @@
 package com.list.movie.hyuck.movielist.movielist.presenter.manager;
 
+import android.os.Bundle;
+
 public class DataRequestManager {
+    private static final String REQUEST_LOG_KEY = "REQUEST_LOG_KEY";
+
     private static final int REQUEST_DATA_SIZE = 20;
     private static final int ALLOW_PRELOAD_LENGTH = 5;
     private static final int MINIMUM_POSITION = REQUEST_DATA_SIZE - ALLOW_PRELOAD_LENGTH;
@@ -29,6 +33,15 @@ public class DataRequestManager {
                 }
             }
         }
+    }
+
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelable(REQUEST_LOG_KEY, requestLog);
+    }
+
+    public void onRestoreSavedInstanceState(Bundle savedInstanceState) {
+        RequestLog requestLog = savedInstanceState.getParcelable(REQUEST_LOG_KEY);
+        this.requestLog = requestLog;
     }
 
     private boolean isPreloadRange(int displayPosition, int nowDataSize) {

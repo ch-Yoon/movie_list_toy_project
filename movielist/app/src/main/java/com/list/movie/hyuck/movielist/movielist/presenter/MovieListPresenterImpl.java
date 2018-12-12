@@ -1,11 +1,13 @@
 package com.list.movie.hyuck.movielist.movielist.presenter;
 
 import android.content.Context;
+import android.os.Bundle;
 
 import com.list.movie.hyuck.movielist.movielist.adapter.MovieListAdapterModel;
 import com.list.movie.hyuck.movielist.movielist.model.OnMovieDataLoadListener;
 import com.list.movie.hyuck.movielist.movielist.model.items.MovieData;
 import com.list.movie.hyuck.movielist.movielist.model.MovieListModel;
+import com.list.movie.hyuck.movielist.movielist.model.items.MovieDataList;
 import com.list.movie.hyuck.movielist.movielist.presenter.manager.DataRequestManager;
 import com.list.movie.hyuck.movielist.movielist.presenter.manager.MovieRequest;
 import com.list.movie.hyuck.movielist.movielist.presenter.manager.OnDataLoadConfirmListener;
@@ -14,6 +16,8 @@ import com.list.movie.hyuck.movielist.movielist.view.MovieListView;
 import java.util.ArrayList;
 
 public class MovieListPresenterImpl implements MovieListPresenter {
+    private static final String MOVIE_DATA_LIST_KEY = "MOVIE_DATA_LIST_KEY";
+
     private MovieListView movieListView;
     private MovieListAdapterModel adapterModel;
     private MovieListModel movieListModel;
@@ -59,6 +63,16 @@ public class MovieListPresenterImpl implements MovieListPresenter {
     @Override
     public void requestHandlingOfItemClick(int position) {
         handlingMovieDataClick(position);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        handlingSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        handlingRestoreInstanceState(savedInstanceState);
     }
 
     private void confirmRequestToRequestManager(String movieTitle) {
@@ -111,6 +125,20 @@ public class MovieListPresenterImpl implements MovieListPresenter {
                 handlingNonExistentWordError();
             }
         });
+    }
+
+    private void handlingSaveInstanceState(Bundle outState) {
+        ArrayList<MovieData> movieDataList = adapterModel.getMovieDataList();
+        outState.putParcelableArrayList(MOVIE_DATA_LIST_KEY, movieDataList);
+
+        dataRequestManager.onSaveInstanceState(outState);
+    }
+
+    private void handlingRestoreInstanceState(Bundle savedInstanceState) {
+        ArrayList<MovieData> movieDataList = savedInstanceState.getParcelableArrayList(MOVIE_DATA_LIST_KEY);
+        adapterModel.setMovieDataList(movieDataList);
+
+        dataRequestManager.onRestoreSavedInstanceState(savedInstanceState);
     }
 
     private void handlingLoadMovieData(ArrayList<MovieData> movieDataList, int loadIndex) {

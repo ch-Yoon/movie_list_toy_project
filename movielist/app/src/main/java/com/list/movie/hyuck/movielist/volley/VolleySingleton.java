@@ -25,8 +25,6 @@ public class VolleySingleton implements ServerCommunicator {
     private Context applicationContext;
     private RequestQueue requestQueue;
 
-    android.os.Handler handler = new android.os.Handler();
-
     private VolleySingleton(Context applicationContext) {
         initRequestQueue(applicationContext);
     }
@@ -64,23 +62,8 @@ public class VolleySingleton implements ServerCommunicator {
                 uri,
                 new Response.Listener<String>() {
                     @Override
-                    public void onResponse(final String response) {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    Thread.sleep(3000);
-                                    handler.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            handlingResponseData(onServerRequestListener, response);
-                                        }
-                                    });
-                                } catch (Exception e) {
-                                }
-                            }
-                        }).start();
-
+                    public void onResponse(String response) {
+                        handlingResponseData(onServerRequestListener, response);
                     }
                 },
                 new Response.ErrorListener() {

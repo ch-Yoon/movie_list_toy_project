@@ -1,9 +1,45 @@
 package com.list.movie.hyuck.movielist.movielist.presenter.manager;
 
-public class RequestLog {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class RequestLog implements Parcelable{
     private String movieTitle;
     private int dataSizeOfPreviousRequest;
     private int expectedDataSizeAfterRequest;
+
+    RequestLog() {
+    }
+
+    protected RequestLog(Parcel in) {
+        movieTitle = in.readString();
+        dataSizeOfPreviousRequest = in.readInt();
+        expectedDataSizeAfterRequest = in.readInt();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(movieTitle);
+        dest.writeInt(dataSizeOfPreviousRequest);
+        dest.writeInt(expectedDataSizeAfterRequest);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<RequestLog> CREATOR = new Creator<RequestLog>() {
+        @Override
+        public RequestLog createFromParcel(Parcel in) {
+            return new RequestLog(in);
+        }
+
+        @Override
+        public RequestLog[] newArray(int size) {
+            return new RequestLog[size];
+        }
+    };
 
     public String getMovieTitle() {
         return movieTitle;
