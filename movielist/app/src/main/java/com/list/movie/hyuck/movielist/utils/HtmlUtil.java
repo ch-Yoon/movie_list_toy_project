@@ -6,6 +6,7 @@ import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 
 public class HtmlUtil {
+
     static public SpannableStringBuilder applyBoldToText(String text) {
         SpannableStringBuilder applyBoldBuilder = new SpannableStringBuilder();
         if(text == null || text.length() == 0) {
@@ -41,4 +42,5 @@ public class HtmlUtil {
             return applyBoldBuilder.append(remainingText);
         }
     }
+
 }

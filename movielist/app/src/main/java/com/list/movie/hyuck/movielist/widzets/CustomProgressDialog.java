@@ -9,33 +9,49 @@ import android.view.Window;
 import com.list.movie.hyuck.movielist.R;
 
 public class CustomProgressDialog {
+
     private Context context;
-    private AppCompatDialog progress;
+    private AppCompatDialog progressBar;
+
 
     public CustomProgressDialog(Context context) {
         this.context = context;
     }
 
-    public void show() {
-        hide();
-        createDialog();
 
-        if(progress != null && !progress.isShowing()) {
-            progress.show();
+    synchronized public void show(boolean show) {
+        if(show) {
+            if(isShowing()) {
+                dialogHide();
+            }
+
+            createDialog();
+            dialogOpen();
+        } else {
+            if(isShowing()) {
+                dialogHide();
+            }
         }
     }
 
-    public void hide() {
-        if(progress != null && progress.isShowing()) {
-            progress.dismiss();
-            progress = null;
-        }
+
+    private boolean isShowing() {
+        return progressBar != null && progressBar.isShowing();
+    }
+
+    private void dialogOpen() {
+        progressBar.show();
+    }
+
+    private void dialogHide() {
+        progressBar.dismiss();
+        progressBar = null;
     }
 
     private void createDialog() {
-        progress = new AppCompatDialog(context);
-        progress.setContentView(R.layout.custom_progress_dialog);
-        Window progressWindow = progress.getWindow();
+        progressBar = new AppCompatDialog(context);
+        progressBar.setContentView(R.layout.custom_progress_dialog);
+        Window progressWindow = progressBar.getWindow();
         if(progressWindow != null) {
             progressWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }

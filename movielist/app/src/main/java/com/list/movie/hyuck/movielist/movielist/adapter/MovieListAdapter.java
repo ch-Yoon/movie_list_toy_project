@@ -1,5 +1,6 @@
 package com.list.movie.hyuck.movielist.movielist.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -16,27 +17,31 @@ import com.list.movie.hyuck.movielist.movielist.model.items.MovieData;
 import java.util.ArrayList;
 
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapterViewHolder> implements MovieListAdapterView, MovieListAdapterModel {
+
     private OnMovieDataItemClickListener onMovieDataItemClickListener;
     private OnMovieDataDisplayPositionListener onMovieDataDisplayPositionListener;
-    private Context context;
+
+    private Activity activity;
     private ArrayList<MovieData> movieDataList;
 
-    public MovieListAdapter(Context context) {
-        init(context);
+
+    public MovieListAdapter(Activity activity) {
+        init(activity);
     }
 
-    private void init(Context context) {
-        this.context = context;
+    private void init(Activity activity) {
+        this.activity = activity;
         movieDataList = new ArrayList<>();
     }
+
 
     @NonNull
     @Override
     public MovieListAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater layoutInflater = activity.getLayoutInflater();
         View itemView = layoutInflater.inflate(R.layout.movie_list_recycler_view_item, viewGroup, false);
 
-        MovieListAdapterViewHolder movieListAdapterViewHolder = new MovieListAdapterViewHolder(itemView, context);
+        MovieListAdapterViewHolder movieListAdapterViewHolder = new MovieListAdapterViewHolder(itemView, activity);
         movieListAdapterViewHolder.setOnMovieDataItemClickListener(onMovieDataItemClickListener);
         movieListAdapterViewHolder.setOnMovieDataDisplayPositionListener(onMovieDataDisplayPositionListener);
 
@@ -54,10 +59,12 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapterViewH
         return movieDataList.size();
     }
 
+
     @Override
     public void refresh() {
         notifyDataSetChanged();
     }
+
 
     @Override
     public void setOnMovieDataItemClickListener(OnMovieDataItemClickListener onMovieDataItemClickListener) {
@@ -71,7 +78,6 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapterViewH
 
     @Override
     public void setMovieDataList(ArrayList<MovieData> movieDataArrayList) {
-        this.movieDataList.clear();
         this.movieDataList = movieDataArrayList;
     }
 
@@ -99,4 +105,5 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapterViewH
     public void clear() {
         movieDataList.clear();
     }
+
 }

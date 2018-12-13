@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 public class KeyboardUtil {
+
     public static void hideKeyboard(Context context) {
         View view = ((Activity)context).getCurrentFocus();
         if(view != null) {
@@ -15,4 +16,5 @@ public class KeyboardUtil {
             }
         }
     }
+
 }

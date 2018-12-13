@@ -1,7 +1,6 @@
-package com.list.movie.hyuck.movielist.volley;
+package com.list.movie.hyuck.movielist.helpers.volley;
 
 import android.content.Context;
-import android.nfc.Tag;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -11,19 +10,18 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.list.movie.hyuck.movielist.utils.NetworkUtil;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Handler;
 
 public class VolleySingleton implements ServerCommunicator {
+
     private static final String TAG = "Request";
 
     private static VolleySingleton ourInstance = null;
+
     private Context applicationContext;
     private RequestQueue requestQueue;
+
 
     private VolleySingleton(Context applicationContext) {
         initRequestQueue(applicationContext);
@@ -42,6 +40,7 @@ public class VolleySingleton implements ServerCommunicator {
         return ourInstance;
     }
 
+
     @Override
     public void requestData(String uri, final String clientId, final String clientSecret, final OnServerRequestListener onServerRequestListener) {
         if(NetworkUtil.isNetworkConnecting(applicationContext)) {
@@ -55,6 +54,7 @@ public class VolleySingleton implements ServerCommunicator {
     public void cancelAll() {
         requestQueue.cancelAll(TAG);
     }
+
 
     private void handlingRequestData(String uri, final String clientId, final String clientSecret, final OnServerRequestListener onServerRequestListener) {
         StringRequest request = new StringRequest(
@@ -87,8 +87,6 @@ public class VolleySingleton implements ServerCommunicator {
         request.setTag(TAG);
 
         requestQueue.add(request);
-
-
     }
 
     private void handlingResponseData(OnServerRequestListener onServerRequestListener, String response) {
@@ -104,4 +102,5 @@ public class VolleySingleton implements ServerCommunicator {
             onServerRequestListener.onError(errorMessage);
         }
     }
+
 }

@@ -7,21 +7,22 @@ import com.list.movie.hyuck.movielist.movielist.adapter.MovieListAdapterModel;
 import com.list.movie.hyuck.movielist.movielist.model.OnMovieDataLoadListener;
 import com.list.movie.hyuck.movielist.movielist.model.items.MovieData;
 import com.list.movie.hyuck.movielist.movielist.model.MovieListModel;
-import com.list.movie.hyuck.movielist.movielist.model.items.MovieDataList;
-import com.list.movie.hyuck.movielist.movielist.presenter.manager.DataRequestManager;
-import com.list.movie.hyuck.movielist.movielist.presenter.manager.MovieRequest;
-import com.list.movie.hyuck.movielist.movielist.presenter.manager.OnDataLoadConfirmListener;
+import com.list.movie.hyuck.movielist.movielist.presenter.manager.MovieDataInspector;
+import com.list.movie.hyuck.movielist.movielist.presenter.manager.MovieDataRequest;
+import com.list.movie.hyuck.movielist.movielist.presenter.manager.OnMovieDataLoadApproveListener;
 import com.list.movie.hyuck.movielist.movielist.view.MovieListView;
 
 import java.util.ArrayList;
 
 public class MovieListPresenterImpl implements MovieListPresenter {
+
     private static final String MOVIE_DATA_LIST_KEY = "MOVIE_DATA_LIST_KEY";
 
     private MovieListView movieListView;
     private MovieListAdapterModel adapterModel;
     private MovieListModel movieListModel;
-    private DataRequestManager dataRequestManager;
+    private MovieDataInspector movieDataInspector;
+
 
     public MovieListPresenterImpl(Context applicationContext) {
         init(applicationContext);
@@ -29,8 +30,9 @@ public class MovieListPresenterImpl implements MovieListPresenter {
 
     private void init(Context applicationContext) {
         movieListModel = new MovieListModel(applicationContext);
-        dataRequestManager = new DataRequestManager();
+        movieDataInspector = new MovieDataInspector();
     }
+
 
     @Override
     public void attachView(MovieListView movieListView) {
@@ -40,7 +42,7 @@ public class MovieListPresenterImpl implements MovieListPresenter {
     @Override
     public void detachView() {
         movieListModel.requestCancelAll();
-        movieListView.hideProgressDialog();
+        hideProgressDialogOfView();
     }
 
     @Override
@@ -48,21 +50,27 @@ public class MovieListPresenterImpl implements MovieListPresenter {
         this.adapterModel = adapterModel;
     }
 
+
     @Override
-    public void requestInitialMovieData(String movieTitle) {
-        confirmRequestToRequestManager(movieTitle);
+    public void loadFirstMovieDataOfNowTitle(String movieTitle) {
         hideKeyboardOfView();
         showProgressDialogOfView();
+        moveScrollToTopOfView();
+        clearDataListOfAdapterModel();
+        checkFirstMovieDataLoad(movieTitle);
     }
 
     @Override
-    public void requestPossibleAdditionalMovieData(int nowDisplayPosition) {
-        confirmRequestToRequestManager(nowDisplayPosition);
+    public void loadPossibleMoreMovieData(int nowDisplayPosition) {
+        checkMoreMovieDataLoad(nowDisplayPosition);
     }
 
     @Override
-    public void requestHandlingOfItemClick(int position) {
-        handlingMovieDataClick(position);
+    public void handlingOfItemClick(int position) {
+        MovieData movieData = adapterModel.getMovieData(position);
+        String movieLink = movieData.getLink();
+
+        movieListView.moveToMovieWeb(movieLink);
     }
 
     @Override
@@ -75,117 +83,99 @@ public class MovieListPresenterImpl implements MovieListPresenter {
         handlingRestoreInstanceState(savedInstanceState);
     }
 
-    private void confirmRequestToRequestManager(String movieTitle) {
-        dataRequestManager.confirmInitialDataLoad(movieTitle, new OnDataLoadConfirmListener() {
+
+    private void checkFirstMovieDataLoad(String movieTitle) {
+        movieDataInspector.checkFirstMovieDataLoad(movieTitle, new OnMovieDataLoadApproveListener() {
             @Override
-            public void onConfirm(MovieRequest movieRequest) {
-                requestMovieDataToModel(movieRequest);
+            public void onMovieDataLoadApprove(MovieDataRequest movieDataRequest) {
+                requestMovieDataLoadToModel(movieDataRequest);
             }
         });
     }
 
-    private void confirmRequestToRequestManager(int nowDisplayPosition) {
-        dataRequestManager.confirmAdditionalDataLoad(nowDisplayPosition, adapterModel.getCount(), new OnDataLoadConfirmListener() {
+    private void checkMoreMovieDataLoad(int nowDisplayPosition) {
+        int nowDataTotalCount = adapterModel.getCount();
+        movieDataInspector.checkMoreMovieDataLoad(nowDisplayPosition, nowDataTotalCount, new OnMovieDataLoadApproveListener() {
             @Override
-            public void onConfirm(MovieRequest movieRequest) {
-                requestMovieDataToModel(movieRequest);
+            public void onMovieDataLoadApprove(MovieDataRequest movieDataRequest) {
+                requestMovieDataLoadToModel(movieDataRequest);
             }
         });
     }
 
-    private void requestMovieDataToModel(final MovieRequest movieRequest) {
-        movieListModel.loadMovieData(movieRequest, new OnMovieDataLoadListener() {
+    private void requestMovieDataLoadToModel(MovieDataRequest movieDataRequest) {
+        final boolean isFirstRequest = movieDataRequest.isFirstRequestOfNowTitle();
+        movieListModel.loadMovieData(movieDataRequest, new OnMovieDataLoadListener() {
             @Override
             public void onSuccess(ArrayList<MovieData> movieDataList) {
-                handlingLoadMovieData(movieDataList, movieRequest.getLoadIndex());
+                saveLoadMovieDataList(movieDataList, isFirstRequest);
+                hideProgressDialogOfView();
+                refreshView();
             }
 
             @Override
             public void onApplicationError(String errorMessage) {
-                handlingApplicationError(errorMessage);
+                sendApplicationErrorToView(errorMessage);
+                hideProgressDialogOfView();
             }
 
             @Override
             public void onNetworkNotConnectingError() {
-                handlingNetworkNotConnectingError();
+                sendNetworkNotConnectingErrorToView();
+                hideProgressDialogOfView();
             }
 
             @Override
             public void onServerSystemError(String errorMessage) {
-                handlingServerSystemError(errorMessage);
+                sendServerSystemErrorToView(errorMessage);
+                hideProgressDialogOfView();
             }
 
             @Override
-            public void onNoMoreData() {
-                handlingNoMoreData();
+            public void onNoMoreDataError() {
+                sendNoMoreDataErrorToView();
+                hideProgressDialogOfView();
             }
 
             @Override
             public void onNonExistentWordError() {
-                handlingNonExistentWordError();
+                sendNonExistentWordErrorToView();
+                hideProgressDialogOfView();
             }
         });
     }
 
     private void handlingSaveInstanceState(Bundle outState) {
+        saveInstanceStateOfAdapterModel(outState);
+        movieDataInspector.onSaveInstanceState(outState);
+    }
+
+    private void saveInstanceStateOfAdapterModel(Bundle outState) {
         ArrayList<MovieData> movieDataList = adapterModel.getMovieDataList();
         outState.putParcelableArrayList(MOVIE_DATA_LIST_KEY, movieDataList);
-
-        dataRequestManager.onSaveInstanceState(outState);
     }
 
     private void handlingRestoreInstanceState(Bundle savedInstanceState) {
+        restoreInstanceStateOfAdapterModel(savedInstanceState);
+        movieDataInspector.onRestoreSavedInstanceState(savedInstanceState);
+    }
+
+    private void restoreInstanceStateOfAdapterModel(Bundle savedInstanceState) {
         ArrayList<MovieData> movieDataList = savedInstanceState.getParcelableArrayList(MOVIE_DATA_LIST_KEY);
         adapterModel.setMovieDataList(movieDataList);
-
-        dataRequestManager.onRestoreSavedInstanceState(savedInstanceState);
     }
 
-    private void handlingLoadMovieData(ArrayList<MovieData> movieDataList, int loadIndex) {
+    private void saveLoadMovieDataList(ArrayList<MovieData> movieDataList, boolean isFirstRequest) {
         manufactureMovieDataList(movieDataList);
-        pushMovieDataListToAdapterModel(movieDataList, loadIndex);
-        hideProgressDialogOfView();
-        viewRefresh();
-    }
-
-    private void handlingMovieDataClick(int position) {
-        MovieData movieData = adapterModel.getMovieData(position);
-        String movieLink = movieData.getLink();
-
-        movieListView.moveToMovieWeb(movieLink);
-    }
-
-    private void handlingApplicationError(String errorMessage) {
-        movieListView.showApplicationError(errorMessage);
-        hideProgressDialogOfView();
-    }
-
-    private void handlingServerSystemError(String errorMessage) {
-        movieListView.showServerSystemError(errorMessage);
-        hideProgressDialogOfView();
-    }
-
-    private void handlingNetworkNotConnectingError() {
-        movieListView.showNetworkNotConnectingError();
-        hideProgressDialogOfView();
-    }
-
-    private void handlingNoMoreData() {
-        movieListView.showNoMoreData();
-        hideProgressDialogOfView();
-    }
-
-    private void handlingNonExistentWordError() {
-        movieListView.showNonExistentWordError();
-        hideProgressDialogOfView();
+        saveMovieDataListToAdapterModel(movieDataList, isFirstRequest);
     }
 
     private void manufactureMovieDataList(ArrayList<MovieData> movieDataList) {
-        ratingMaximumConversion(movieDataList);
+        convertMaximumValueOfUserRating(movieDataList);
         applyBoldToTitleOfMovieDataList(movieDataList);
     }
 
-    private void ratingMaximumConversion(ArrayList<MovieData> movieDataList) {
+    private void convertMaximumValueOfUserRating(ArrayList<MovieData> movieDataList) {
         final float ratingMaximum = 5f;
 
         for (int i = 0; i < movieDataList.size(); i++) {
@@ -199,15 +189,35 @@ public class MovieListPresenterImpl implements MovieListPresenter {
         }
     }
 
-    private void pushMovieDataListToAdapterModel(ArrayList<MovieData> movieDataList, int loadIndex) {
-        if (loadIndex == 1) {
+    private void sendApplicationErrorToView(String errorMessage) {
+        movieListView.showApplicationError(errorMessage);
+    }
+
+    private void sendServerSystemErrorToView(String errorMessage) {
+        movieListView.showServerSystemError(errorMessage);
+    }
+
+    private void sendNetworkNotConnectingErrorToView() {
+        movieListView.showNetworkNotConnectingError();
+    }
+
+    private void sendNoMoreDataErrorToView() {
+        movieListView.showNoMoreData();
+    }
+
+    private void sendNonExistentWordErrorToView() {
+        movieListView.showNonExistentWordError();
+    }
+
+    private void saveMovieDataListToAdapterModel(ArrayList<MovieData> movieDataList, boolean isFirstRequest) {
+        if(isFirstRequest) {
             adapterModel.setMovieDataList(movieDataList);
         } else {
             adapterModel.addMovieDataList(movieDataList);
         }
     }
 
-    private void viewRefresh() {
+    private void refreshView() {
         movieListView.refreshMovieList();
     }
 
@@ -215,11 +225,20 @@ public class MovieListPresenterImpl implements MovieListPresenter {
         movieListView.hideKeyboard();
     }
 
+    private void showProgressDialogOfView() {
+        movieListView.showProgressDialog();
+    }
+
     private void hideProgressDialogOfView() {
         movieListView.hideProgressDialog();
     }
 
-    private void showProgressDialogOfView() {
-        movieListView.showProgressDialog();
+    private void clearDataListOfAdapterModel() {
+        adapterModel.clear();
     }
+
+    private void moveScrollToTopOfView() {
+        movieListView.moveScrollToTop();
+    }
+
 }
