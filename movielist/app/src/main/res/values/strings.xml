@@ -14,12 +14,4 @@
 
     <!-- custom progress dialog -->
     <string name="custom_progress_dialog_message">잠시만 기다려주세요</string>
-
-    <!-- naver API -->
-    <string name="API_server_error_message_JSON_key">errorMessage</string>
-    <string name="API_server_error_code_JSON_key">errorCode</string>
-    <string name="API_client_id_JSON_key">clientId</string>
-    <string name="API_client_secret_JSON_key">clientSecret</string>
-    <string name="API_Key_JSON_file_name">apiKey.json</string>
-
 </resources>

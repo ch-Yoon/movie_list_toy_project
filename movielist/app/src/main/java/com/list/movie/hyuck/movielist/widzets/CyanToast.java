@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.list.movie.hyuck.movielist.R;
 
 public class CyanToast {
+
     public static void showToastMessage(Activity activity, String message) {
         LayoutInflater inflater = activity.getLayoutInflater();
         View toastLayout = inflater.inflate(R.layout.cyan_toast, (ViewGroup)activity.findViewById(R.id.cyanToastTextView));
@@ -24,4 +25,5 @@ public class CyanToast {
 
         customToast.show();
     }
+
 }

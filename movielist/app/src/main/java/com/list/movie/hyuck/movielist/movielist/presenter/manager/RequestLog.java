@@ -4,12 +4,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class RequestLog implements Parcelable{
-    private String movieTitle;
+
+    private String movieTitle = "";
     private int dataSizeOfPreviousRequest;
     private int expectedDataSizeAfterRequest;
 
+
     RequestLog() {
     }
+
 
     protected RequestLog(Parcel in) {
         movieTitle = in.readString();
@@ -40,6 +43,7 @@ public class RequestLog implements Parcelable{
             return new RequestLog[size];
         }
     };
+
 
     public String getMovieTitle() {
         return movieTitle;

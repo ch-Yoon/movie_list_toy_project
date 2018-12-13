@@ -7,6 +7,7 @@ import android.text.SpannableStringBuilder;
 import com.list.movie.hyuck.movielist.utils.HtmlUtil;
 
 public class MovieData implements Parcelable {
+
     private String title;
     private String link;
     private String image;
@@ -16,15 +17,6 @@ public class MovieData implements Parcelable {
     private String actor;
     private SpannableStringBuilder applyBoldBuilder;
 
-    public MovieData(String title, String link, String image, float userRating, String pubDate, String director, String actor) {
-        this.title = title;
-        this.link = link;
-        this.image = image;
-        this.userRating = userRating;
-        this.pubDate = pubDate;
-        this.director = director;
-        this.actor = actor;
-    }
 
     protected MovieData(Parcel in) {
         title = in.readString();
@@ -63,6 +55,7 @@ public class MovieData implements Parcelable {
         parcel.writeString(director);
         parcel.writeString(actor);
     }
+
 
     public void movieTitleApplyToBold() {
         applyBoldBuilder = HtmlUtil.applyBoldToText(title);

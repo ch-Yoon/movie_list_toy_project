@@ -9,6 +9,6 @@ public interface OnMovieDataLoadListener {
     void onApplicationError(String errorMessage);
     void onNetworkNotConnectingError();
     void onServerSystemError(String errorMessage);
-    void onNoMoreData();
+    void onNoMoreDataError();
     void onNonExistentWordError();
 }

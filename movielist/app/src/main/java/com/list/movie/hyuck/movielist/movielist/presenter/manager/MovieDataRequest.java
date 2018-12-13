@@ -1,15 +1,18 @@
 package com.list.movie.hyuck.movielist.movielist.presenter.manager;
 
-public class MovieRequest {
+public class MovieDataRequest {
+
     private String movieTitle;
     private int loadIndex;
-    private int dataSize;
+    private int requestDataSize;
 
-    MovieRequest(String movieTitle, int loadIndex, int dataSize) {
+
+    MovieDataRequest(String movieTitle, int loadIndex, int requestDataSize) {
         this.movieTitle = movieTitle;
         this.loadIndex = loadIndex;
-        this.dataSize = dataSize;
+        this.requestDataSize = requestDataSize;
     }
+
 
     public String getMovieTitle() {
         return movieTitle;
@@ -19,7 +22,11 @@ public class MovieRequest {
         return loadIndex;
     }
 
-    public int getDataSize() {
-        return dataSize;
+    public int getRequestDataSize() {
+        return requestDataSize;
+    }
+
+    public boolean isFirstRequestOfNowTitle() {
+        return loadIndex == 1;
     }
 }
