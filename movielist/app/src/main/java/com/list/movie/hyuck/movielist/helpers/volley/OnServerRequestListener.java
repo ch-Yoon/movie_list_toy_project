@@ -4,8 +4,6 @@ public interface OnServerRequestListener {
 
     void onResult(String response);
 
-    void onNetworkNotConnecting();
-
     void onError(String errorMessage);
 
 }

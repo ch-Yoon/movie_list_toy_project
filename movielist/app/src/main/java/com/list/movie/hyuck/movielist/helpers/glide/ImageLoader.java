@@ -4,6 +4,6 @@ import android.widget.ImageView;
 
 public interface ImageLoader {
 
-    void imageLoad(String uri, ImageView targetView);
+    void loadImage(String uri, ImageView targetView);
 
 }

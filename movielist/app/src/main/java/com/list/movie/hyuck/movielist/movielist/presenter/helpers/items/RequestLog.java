@@ -1,4 +1,4 @@
-package com.list.movie.hyuck.movielist.movielist.presenter.manager;
+package com.list.movie.hyuck.movielist.movielist.presenter.helpers.items;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,7 +10,7 @@ public class RequestLog implements Parcelable{
     private int expectedDataSizeAfterRequest;
 
 
-    RequestLog() {
+    public RequestLog() {
     }
 
 

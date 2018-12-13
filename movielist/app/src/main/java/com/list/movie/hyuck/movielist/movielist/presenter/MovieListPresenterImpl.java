@@ -7,9 +7,9 @@ import com.list.movie.hyuck.movielist.movielist.adapter.MovieListAdapterModel;
 import com.list.movie.hyuck.movielist.movielist.model.OnMovieDataLoadListener;
 import com.list.movie.hyuck.movielist.movielist.model.items.MovieData;
 import com.list.movie.hyuck.movielist.movielist.model.MovieListModel;
-import com.list.movie.hyuck.movielist.movielist.presenter.manager.MovieDataInspector;
-import com.list.movie.hyuck.movielist.movielist.presenter.manager.MovieDataRequest;
-import com.list.movie.hyuck.movielist.movielist.presenter.manager.OnMovieDataLoadApproveListener;
+import com.list.movie.hyuck.movielist.movielist.presenter.helpers.DataLoadInspector;
+import com.list.movie.hyuck.movielist.movielist.presenter.helpers.items.MovieDataRequest;
+import com.list.movie.hyuck.movielist.movielist.presenter.helpers.OnMovieDataLoadApproveListener;
 import com.list.movie.hyuck.movielist.movielist.view.MovieListView;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class MovieListPresenterImpl implements MovieListPresenter {
     private MovieListView movieListView;
     private MovieListAdapterModel adapterModel;
     private MovieListModel movieListModel;
-    private MovieDataInspector movieDataInspector;
+    private DataLoadInspector dataLoadInspector;
 
 
     public MovieListPresenterImpl(Context applicationContext) {
@@ -30,7 +30,7 @@ public class MovieListPresenterImpl implements MovieListPresenter {
 
     private void init(Context applicationContext) {
         movieListModel = new MovieListModel(applicationContext);
-        movieDataInspector = new MovieDataInspector();
+        dataLoadInspector = new DataLoadInspector();
     }
 
 
@@ -85,7 +85,7 @@ public class MovieListPresenterImpl implements MovieListPresenter {
 
 
     private void checkFirstMovieDataLoad(String movieTitle) {
-        movieDataInspector.checkFirstMovieDataLoad(movieTitle, new OnMovieDataLoadApproveListener() {
+        dataLoadInspector.checkFirstMovieDataLoad(movieTitle, new OnMovieDataLoadApproveListener() {
             @Override
             public void onMovieDataLoadApprove(MovieDataRequest movieDataRequest) {
                 requestMovieDataLoadToModel(movieDataRequest);
@@ -95,7 +95,7 @@ public class MovieListPresenterImpl implements MovieListPresenter {
 
     private void checkMoreMovieDataLoad(int nowDisplayPosition) {
         int nowDataTotalCount = adapterModel.getCount();
-        movieDataInspector.checkMoreMovieDataLoad(nowDisplayPosition, nowDataTotalCount, new OnMovieDataLoadApproveListener() {
+        dataLoadInspector.checkMoreMovieDataLoad(nowDisplayPosition, nowDataTotalCount, new OnMovieDataLoadApproveListener() {
             @Override
             public void onMovieDataLoadApprove(MovieDataRequest movieDataRequest) {
                 requestMovieDataLoadToModel(movieDataRequest);
@@ -147,7 +147,7 @@ public class MovieListPresenterImpl implements MovieListPresenter {
 
     private void handlingSaveInstanceState(Bundle outState) {
         saveInstanceStateOfAdapterModel(outState);
-        movieDataInspector.onSaveInstanceState(outState);
+        dataLoadInspector.onSaveInstanceState(outState);
     }
 
     private void saveInstanceStateOfAdapterModel(Bundle outState) {
@@ -157,7 +157,7 @@ public class MovieListPresenterImpl implements MovieListPresenter {
 
     private void handlingRestoreInstanceState(Bundle savedInstanceState) {
         restoreInstanceStateOfAdapterModel(savedInstanceState);
-        movieDataInspector.onRestoreSavedInstanceState(savedInstanceState);
+        dataLoadInspector.onRestoreSavedInstanceState(savedInstanceState);
     }
 
     private void restoreInstanceStateOfAdapterModel(Bundle savedInstanceState) {

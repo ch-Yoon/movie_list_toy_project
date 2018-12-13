@@ -1,8 +1,11 @@
-package com.list.movie.hyuck.movielist.movielist.presenter.manager;
+package com.list.movie.hyuck.movielist.movielist.presenter.helpers;
 
 import android.os.Bundle;
 
-public class MovieDataInspector {
+import com.list.movie.hyuck.movielist.movielist.presenter.helpers.items.MovieDataRequest;
+import com.list.movie.hyuck.movielist.movielist.presenter.helpers.items.RequestLog;
+
+public class DataLoadInspector {
 
     private static final String REQUEST_LOG_KEY = "REQUEST_LOG_KEY";
     private static final int REQUEST_DATA_SIZE = 20;
@@ -12,7 +15,7 @@ public class MovieDataInspector {
     private RequestLog movieDataRequestLog;
 
 
-    public MovieDataInspector() {
+    public DataLoadInspector() {
         init();
     }
 

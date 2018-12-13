@@ -14,7 +14,7 @@ public class CyanToast {
 
     public static void showToastMessage(Activity activity, String message) {
         LayoutInflater inflater = activity.getLayoutInflater();
-        View toastLayout = inflater.inflate(R.layout.cyan_toast, (ViewGroup)activity.findViewById(R.id.cyanToastTextView));
+        View toastLayout = inflater.inflate(R.layout.cyan_toast, (ViewGroup)activity.findViewById(R.id.cyanToastRootView));
 
         TextView customToastTextView = toastLayout.findViewById(R.id.cyanToastTextView);
         customToastTextView.setText(message);

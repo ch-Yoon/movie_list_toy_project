@@ -82,7 +82,7 @@ public class MovieListAdapterViewHolder extends RecyclerView.ViewHolder {
             moviePubDateTextView.setText(movieData.getPubDate());
             movieDirectorTextView.setText(movieData.getDirector());
             movieActorTextView.setText(movieData.getActor());
-            imageLoader.imageLoad(movieData.getImage(), movieImageView);
+            imageLoader.loadImage(movieData.getImage(), movieImageView);
         }
     }
 
