@@ -1,4 +1,4 @@
-package com.list.movie.hyuck.movielist.movielist.presenter.manager;
+package com.list.movie.hyuck.movielist.movielist.presenter.helpers.items;
 
 public class MovieDataRequest {
 
@@ -7,7 +7,7 @@ public class MovieDataRequest {
     private int requestDataSize;
 
 
-    MovieDataRequest(String movieTitle, int loadIndex, int requestDataSize) {
+    public MovieDataRequest(String movieTitle, int loadIndex, int requestDataSize) {
         this.movieTitle = movieTitle;
         this.loadIndex = loadIndex;
         this.requestDataSize = requestDataSize;

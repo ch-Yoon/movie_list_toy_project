@@ -19,7 +19,6 @@ public class VolleySingleton implements ServerCommunicator {
 
     private static VolleySingleton ourInstance = null;
 
-    private Context applicationContext;
     private RequestQueue requestQueue;
 
 
@@ -28,7 +27,6 @@ public class VolleySingleton implements ServerCommunicator {
     }
 
     private void initRequestQueue(Context applicationContext) {
-        this.applicationContext = applicationContext;
         requestQueue = Volley.newRequestQueue(applicationContext);
     }
 
@@ -42,12 +40,8 @@ public class VolleySingleton implements ServerCommunicator {
 
 
     @Override
-    public void requestData(String uri, final String clientId, final String clientSecret, final OnServerRequestListener onServerRequestListener) {
-        if(NetworkUtil.isNetworkConnecting(applicationContext)) {
-            handlingRequestData(uri, clientId, clientSecret, onServerRequestListener);
-        } else {
-            onServerRequestListener.onNetworkNotConnecting();
-        }
+    public void requestData(String uri, final Map<String, String> requestHeaderMap, final OnServerRequestListener onServerRequestListener) {
+        handlingRequestData(uri, requestHeaderMap, onServerRequestListener);
     }
 
     @Override
@@ -56,7 +50,7 @@ public class VolleySingleton implements ServerCommunicator {
     }
 
 
-    private void handlingRequestData(String uri, final String clientId, final String clientSecret, final OnServerRequestListener onServerRequestListener) {
+    private void handlingRequestData(String uri, final Map<String, String> requestHeaderMap, final OnServerRequestListener onServerRequestListener) {
         StringRequest request = new StringRequest(
                 Request.Method.GET,
                 uri,
@@ -75,12 +69,7 @@ public class VolleySingleton implements ServerCommunicator {
         ) {
             @Override
             public Map<String, String> getHeaders() {
-                Map<String, String> params = new HashMap<>();
-
-                params.put("X-Naver-Client-Id", clientId);
-                params.put("X-Naver-Client-Secret", clientSecret);
-
-                return params;
+                return requestHeaderMap;
             }
         };
 
