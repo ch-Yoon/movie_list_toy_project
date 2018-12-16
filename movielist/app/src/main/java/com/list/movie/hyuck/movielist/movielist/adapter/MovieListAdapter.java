@@ -103,6 +103,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapterViewH
     @Override
     public void clear() {
         movieDataList.clear();
+        refresh();
     }
 
 }
