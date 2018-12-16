@@ -8,6 +8,7 @@ import com.list.movie.hyuck.movielist.movielist.presenter.helpers.items.RequestL
 public class DataLoadInspector {
 
     private static final String REQUEST_LOG_KEY = "REQUEST_LOG_KEY";
+
     private static final int REQUEST_DATA_SIZE = 20;
     private static final int ALLOW_PRELOAD_LENGTH = 7;
     private static final int MINIMUM_POSITION = REQUEST_DATA_SIZE - ALLOW_PRELOAD_LENGTH;
@@ -30,11 +31,9 @@ public class DataLoadInspector {
     }
 
     public void checkMoreMovieDataLoad(int displayPosition, int nowDataCount, OnMovieDataLoadApproveListener onMovieDataLoadApproveListener) {
-        if(isPreloadRange(displayPosition, nowDataCount)) {
-            if (isPossibleAdditionalDataLoad(nowDataCount)) {
-                recordMoveMovieDataLoad(nowDataCount);
-                approveMovieDataLoad(onMovieDataLoadApproveListener);
-            }
+        if(isPossibleAdditionalDataLoad(displayPosition, nowDataCount)) {
+            recordMoveMovieDataLoad(nowDataCount);
+            approveMovieDataLoad(onMovieDataLoadApproveListener);
         }
     }
 
@@ -50,13 +49,21 @@ public class DataLoadInspector {
     }
 
 
+    private boolean isPossibleAdditionalDataLoad(int displayPosition, int nowDataSize) {
+        if(isPreloadRange(displayPosition, nowDataSize)) {
+            return isSameExpectedRequestDataSize(nowDataSize);
+        }
+
+        return false;
+    }
+
     private boolean isPreloadRange(int displayPosition, int nowDataSize) {
         int preloadLimitPosition = nowDataSize - ALLOW_PRELOAD_LENGTH;
 
         return (preloadLimitPosition >= MINIMUM_POSITION) && (displayPosition >= preloadLimitPosition);
     }
 
-    private boolean isPossibleAdditionalDataLoad(int nowDataSize) {
+    private boolean isSameExpectedRequestDataSize(int nowDataSize) {
         int expectedDataSize = movieDataRequestLog.getExpectedDataSizeAfterRequest();
 
         return nowDataSize == expectedDataSize;
@@ -85,4 +92,5 @@ public class DataLoadInspector {
 
         return new MovieDataRequest(movieTitle, loadIndex, REQUEST_DATA_SIZE);
     }
+
 }
