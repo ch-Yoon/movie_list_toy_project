@@ -11,7 +11,7 @@ import com.list.movie.hyuck.movielist.R;
 public class CustomProgressDialog {
 
     private Context context;
-    private AppCompatDialog progressBar;
+    private AppCompatDialog progressDialog;
 
 
     public CustomProgressDialog(Context context) {
@@ -36,22 +36,22 @@ public class CustomProgressDialog {
 
 
     private boolean isShowing() {
-        return progressBar != null && progressBar.isShowing();
+        return progressDialog != null && progressDialog.isShowing();
     }
 
     private void dialogOpen() {
-        progressBar.show();
+        progressDialog.show();
     }
 
     private void dialogHide() {
-        progressBar.dismiss();
-        progressBar = null;
+        progressDialog.dismiss();
+        progressDialog = null;
     }
 
     private void createDialog() {
-        progressBar = new AppCompatDialog(context);
-        progressBar.setContentView(R.layout.custom_progress_dialog);
-        Window progressWindow = progressBar.getWindow();
+        progressDialog = new AppCompatDialog(context);
+        progressDialog.setContentView(R.layout.custom_progress_dialog);
+        Window progressWindow = progressDialog.getWindow();
         if(progressWindow != null) {
             progressWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         }

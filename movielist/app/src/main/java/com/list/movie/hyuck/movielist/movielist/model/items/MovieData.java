@@ -8,6 +8,7 @@ import com.list.movie.hyuck.movielist.utils.HtmlUtil;
 
 public class MovieData implements Parcelable {
 
+    private String requestTitle;
     private String title;
     private String link;
     private String image;
@@ -19,6 +20,7 @@ public class MovieData implements Parcelable {
 
 
     protected MovieData(Parcel in) {
+        requestTitle = in.readString();
         title = in.readString();
         link = in.readString();
         image = in.readString();
@@ -26,6 +28,23 @@ public class MovieData implements Parcelable {
         pubDate = in.readString();
         director = in.readString();
         actor = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(requestTitle);
+        dest.writeString(title);
+        dest.writeString(link);
+        dest.writeString(image);
+        dest.writeFloat(userRating);
+        dest.writeString(pubDate);
+        dest.writeString(director);
+        dest.writeString(actor);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<MovieData> CREATOR = new Creator<MovieData>() {
@@ -39,23 +58,6 @@ public class MovieData implements Parcelable {
             return new MovieData[size];
         }
     };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(title);
-        parcel.writeString(link);
-        parcel.writeString(image);
-        parcel.writeFloat(userRating);
-        parcel.writeString(pubDate);
-        parcel.writeString(director);
-        parcel.writeString(actor);
-    }
-
 
     public void movieTitleApplyToBold() {
         applyBoldBuilder = HtmlUtil.applyBoldToText(title);
