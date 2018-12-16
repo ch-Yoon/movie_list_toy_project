@@ -9,7 +9,7 @@ public class DataLoadInspector {
 
     private static final String REQUEST_LOG_KEY = "REQUEST_LOG_KEY";
     private static final int REQUEST_DATA_SIZE = 20;
-    private static final int ALLOW_PRELOAD_LENGTH = 5;
+    private static final int ALLOW_PRELOAD_LENGTH = 7;
     private static final int MINIMUM_POSITION = REQUEST_DATA_SIZE - ALLOW_PRELOAD_LENGTH;
 
     private RequestLog movieDataRequestLog;
@@ -31,11 +31,9 @@ public class DataLoadInspector {
 
     public void checkMoreMovieDataLoad(int displayPosition, int nowDataCount, OnMovieDataLoadApproveListener onMovieDataLoadApproveListener) {
         if(isPreloadRange(displayPosition, nowDataCount)) {
-            synchronized (this) {
-                if (isPossibleAdditionalDataLoad(nowDataCount)) {
-                    recordMoveMovieDataLoad(nowDataCount);
-                    approveMovieDataLoad(onMovieDataLoadApproveListener);
-                }
+            if (isPossibleAdditionalDataLoad(nowDataCount)) {
+                recordMoveMovieDataLoad(nowDataCount);
+                approveMovieDataLoad(onMovieDataLoadApproveListener);
             }
         }
     }
