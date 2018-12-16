@@ -10,21 +10,21 @@ public class MovieListModel {
 
     private RemoteDataLoader remoteDataLoader;
 
-    private Context applicationContext;
+    private Context context;
 
 
-    public MovieListModel(Context applicationContext) {
-        init(applicationContext);
+    public MovieListModel(Context context) {
+        init(context);
     }
 
-    private void init(Context applicationContext) {
-        remoteDataLoader = new RemoteDataLoader(applicationContext);
-        this.applicationContext = applicationContext;
+    private void init(Context context) {
+        remoteDataLoader = new RemoteDataLoader(context);
+        this.context = context;
     }
 
 
     public void loadMovieData(MovieDataRequest movieDataRequest, OnMovieDataLoadListener onMovieDataLoadListener) {
-        if(NetworkUtil.isNetworkConnecting(applicationContext)) {
+        if(NetworkUtil.isNetworkConnecting(context)) {
             loadMovieDataFromRemote(movieDataRequest, onMovieDataLoadListener);
         } else {
             onMovieDataLoadListener.onNetworkNotConnectingError();
