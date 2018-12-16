@@ -22,6 +22,4 @@ public interface MovieListView {
 
     void hideProgressDialog();
 
-    void moveScrollToTop();
-
 }

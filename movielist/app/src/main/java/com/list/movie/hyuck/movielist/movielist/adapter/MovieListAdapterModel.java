@@ -1,6 +1,5 @@
 package com.list.movie.hyuck.movielist.movielist.adapter;
 
-
 import com.list.movie.hyuck.movielist.movielist.model.items.MovieData;
 
 import java.util.ArrayList;

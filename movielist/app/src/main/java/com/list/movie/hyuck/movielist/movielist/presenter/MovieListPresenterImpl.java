@@ -55,7 +55,6 @@ public class MovieListPresenterImpl implements MovieListPresenter {
     public void loadFirstMovieDataOfNowTitle(String movieTitle) {
         hideKeyboardOfView();
         showProgressDialogOfView();
-        moveScrollToTopOfView();
         clearDataListOfAdapterModel();
         checkFirstMovieDataLoad(movieTitle);
     }
@@ -235,10 +234,6 @@ public class MovieListPresenterImpl implements MovieListPresenter {
 
     private void clearDataListOfAdapterModel() {
         adapterModel.clear();
-    }
-
-    private void moveScrollToTopOfView() {
-        movieListView.moveScrollToTop();
     }
 
 }

@@ -190,11 +190,6 @@ public class MovieListActivity extends AppCompatActivity implements MovieListVie
         customProgressDialog.show(false);
     }
 
-    @Override
-    public void moveScrollToTop() {
-        movieListRecyclerView.scrollToPosition(0);
-    }
-
 
     private void attachViewToPresenter() {
         presenter.attachView(this);

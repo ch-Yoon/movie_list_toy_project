@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class RemoteDataLoader {
 
     private static final String API_ADDRESS = "https://openapi.naver.com/v1/search/movie.json?";

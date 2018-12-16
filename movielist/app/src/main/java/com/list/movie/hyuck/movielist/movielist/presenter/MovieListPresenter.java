@@ -3,10 +3,7 @@ package com.list.movie.hyuck.movielist.movielist.presenter;
 import android.os.Bundle;
 
 import com.list.movie.hyuck.movielist.movielist.adapter.MovieListAdapterModel;
-import com.list.movie.hyuck.movielist.movielist.model.items.MovieData;
 import com.list.movie.hyuck.movielist.movielist.view.MovieListView;
-
-import java.util.ArrayList;
 
 public interface MovieListPresenter {
 

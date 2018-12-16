@@ -3,7 +3,6 @@ package com.list.movie.hyuck.movielist.utils;
 import android.content.Context;
 import android.content.res.AssetManager;
 
-
 import org.json.JSONException;
 import org.json.JSONObject;
 

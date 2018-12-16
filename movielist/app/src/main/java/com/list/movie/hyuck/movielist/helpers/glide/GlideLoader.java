@@ -1,7 +1,6 @@
 package com.list.movie.hyuck.movielist.helpers.glide;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
