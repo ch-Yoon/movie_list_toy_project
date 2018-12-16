@@ -24,35 +24,41 @@ public class MovieListPresenterImpl implements MovieListPresenter {
     private DataLoadInspector dataLoadInspector;
 
 
-    public MovieListPresenterImpl(Context applicationContext) {
-        init(applicationContext);
+    public MovieListPresenterImpl(Context context, MovieListView movieListView) {
+        init(context, movieListView);
     }
 
-    private void init(Context applicationContext) {
-        movieListModel = new MovieListModel(applicationContext);
+    private void init(Context context, MovieListView movieListView) {
+        movieListModel = new MovieListModel(context);
         dataLoadInspector = new DataLoadInspector();
-    }
-
-
-    @Override
-    public void attachView(MovieListView movieListView) {
         this.movieListView = movieListView;
     }
 
-    @Override
-    public void detachView() {
-        movieListModel.requestCancelAll();
-        hideProgressDialogOfView();
-    }
 
     @Override
     public void setAdapterModel(MovieListAdapterModel adapterModel) {
         this.adapterModel = adapterModel;
     }
 
+    @Override
+    public void onStop() {
+        requestCancelAllToModel();
+        hideProgressDialogOfView();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        handlingSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        handlingRestoreInstanceState(savedInstanceState);
+    }
 
     @Override
     public void loadFirstMovieDataOfNowTitle(String movieTitle) {
+        requestCancelAllToModel();
         hideKeyboardOfView();
         showProgressDialogOfView();
         clearDataListOfAdapterModel();
@@ -72,16 +78,6 @@ public class MovieListPresenterImpl implements MovieListPresenter {
         movieListView.moveToMovieWeb(movieLink);
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        handlingSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
-        handlingRestoreInstanceState(savedInstanceState);
-    }
-
 
     private void checkFirstMovieDataLoad(String movieTitle) {
         dataLoadInspector.checkFirstMovieDataLoad(movieTitle, new OnMovieDataLoadApproveListener() {
@@ -93,13 +89,15 @@ public class MovieListPresenterImpl implements MovieListPresenter {
     }
 
     private void checkMoreMovieDataLoad(int nowDisplayPosition) {
-        int nowDataTotalCount = adapterModel.getCount();
-        dataLoadInspector.checkMoreMovieDataLoad(nowDisplayPosition, nowDataTotalCount, new OnMovieDataLoadApproveListener() {
-            @Override
-            public void onMovieDataLoadApprove(MovieDataRequest movieDataRequest) {
-                requestMovieDataLoadToModel(movieDataRequest);
-            }
-        });
+        if(adapterModel != null) {
+            int nowDataTotalCount = adapterModel.getCount();
+            dataLoadInspector.checkMoreMovieDataLoad(nowDisplayPosition, nowDataTotalCount, new OnMovieDataLoadApproveListener() {
+                @Override
+                public void onMovieDataLoadApprove(MovieDataRequest movieDataRequest) {
+                    requestMovieDataLoadToModel(movieDataRequest);
+                }
+            });
+        }
     }
 
     private void requestMovieDataLoadToModel(MovieDataRequest movieDataRequest) {
@@ -209,7 +207,7 @@ public class MovieListPresenterImpl implements MovieListPresenter {
     }
 
     private void saveMovieDataListToAdapterModel(ArrayList<MovieData> movieDataList, boolean isFirstRequest) {
-        if(isFirstRequest) {
+        if (isFirstRequest) {
             adapterModel.setMovieDataList(movieDataList);
         } else {
             adapterModel.addMovieDataList(movieDataList);
@@ -234,6 +232,10 @@ public class MovieListPresenterImpl implements MovieListPresenter {
 
     private void clearDataListOfAdapterModel() {
         adapterModel.clear();
+    }
+
+    private void requestCancelAllToModel() {
+        movieListModel.requestCancelAll();
     }
 
 }

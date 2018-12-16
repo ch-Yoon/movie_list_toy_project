@@ -48,18 +48,12 @@ public class MovieListActivity extends AppCompatActivity implements MovieListVie
         initAdapter();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        attachViewToPresenter();
-    }
 
     @Override
     protected void onStop() {
         super.onStop();
 
-        detachViewToPresenter();
+        onStopToPresenter();
     }
 
     @Override
@@ -87,7 +81,7 @@ public class MovieListActivity extends AppCompatActivity implements MovieListVie
 
 
     private void initPresenter() {
-        presenter = new MovieListPresenterImpl(getApplicationContext());
+        presenter = new MovieListPresenterImpl(this, this);
     }
 
     private void initViews() {
@@ -191,12 +185,8 @@ public class MovieListActivity extends AppCompatActivity implements MovieListVie
     }
 
 
-    private void attachViewToPresenter() {
-        presenter.attachView(this);
-    }
-
-    private void detachViewToPresenter() {
-        presenter.detachView();
+    private void onStopToPresenter() {
+        presenter.onStop();
     }
 
     private void requestFirstMovieDataOfNowTitle() {

@@ -39,13 +39,13 @@ public class RemoteDataLoader {
     private Map<String, String> requestHeaderMap;
 
 
-    public RemoteDataLoader(Context applicationContext) {
-        init(applicationContext);
-        initRequestHeaderMap(applicationContext);
+    public RemoteDataLoader(Context context) {
+        init(context);
+        initRequestHeaderMap(context);
     }
 
-    private void init(Context applicationContext) {
-        serverCommunicator = VolleySingleton.getInstance(applicationContext);
+    private void init(Context context) {
+        serverCommunicator = VolleySingleton.getInstance(context.getApplicationContext());
     }
 
     private void initRequestHeaderMap(Context applicationContext) {

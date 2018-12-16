@@ -13,12 +13,12 @@ public class RequestLog implements Parcelable{
     public RequestLog() {
     }
 
-
     protected RequestLog(Parcel in) {
         movieTitle = in.readString();
         dataSizeOfPreviousRequest = in.readInt();
         expectedDataSizeAfterRequest = in.readInt();
     }
+
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {

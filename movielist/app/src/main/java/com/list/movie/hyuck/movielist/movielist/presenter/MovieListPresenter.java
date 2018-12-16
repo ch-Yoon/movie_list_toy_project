@@ -7,11 +7,9 @@ import com.list.movie.hyuck.movielist.movielist.view.MovieListView;
 
 public interface MovieListPresenter {
 
-    void attachView(MovieListView movieListView);
-
-    void detachView();
-
     void setAdapterModel(MovieListAdapterModel adapterModel);
+
+    void onStop();
 
     void onSaveInstanceState(Bundle outState);
 
