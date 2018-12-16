@@ -44,7 +44,7 @@
     
 * **무한 스크롤 Flow**  
     
-![moreFlow](https://github.com/ch-Yoon/movie_list_toy_project/blob/reamd_update2/readmeimage/moreRequestFlow.jpg)
+![moreFlow](https://github.com/ch-Yoon/movie_list_toy_project/blob/readme_update3/readmeimage/moreRequestFlow.jpg)
     
 * **영화 정보 웹 이동 Flow** 
     
