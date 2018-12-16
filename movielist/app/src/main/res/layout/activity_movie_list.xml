@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".movielist.view.MovieListActivity">
+
+    <EditText
+        android:id="@+id/movieTitleEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/movie_list_movie_title_edit_text_margin"
+        android:hint="@string/movie_list_movie_title_edit_text_hint"
+        android:inputType="none"
+        android:paddingLeft="@dimen/movie_list_movie_title_edit_text_padding"
+        android:paddingBottom="@dimen/movie_list_movie_title_edit_text_padding"
+        android:singleLine="false"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/movie_list_movie_title_edit_text_text_size"
+        app:layout_constraintEnd_toStartOf="@+id/movieDataRequestButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/movieDataRequestButton"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="@string/movie_list_movie_data_request_button"
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/movieTitleEditText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/movieTitleEditText" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/movieListRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/movieDataRequestButton"
+        app:layout_constraintStart_toStartOf="@+id/movieTitleEditText"
+        app:layout_constraintTop_toBottomOf="@+id/movieTitleEditText" />
+
+</android.support.constraint.ConstraintLayout>

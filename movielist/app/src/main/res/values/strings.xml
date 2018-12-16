@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">부스트캠프 사전과제</string>
+
+    <!-- movie list string values -->
+    <string name="movie_list_movie_data_request_button">검색</string>
+    <string name="movie_list_movie_title_edit_text_hint">영화 제목을 입력해주세요</string>
+
+    <!-- movie list error message -->
+    <string name="movie_data_load_application_error">앱에서 발생한 오류로 인하여 검색에 실패했습니다. 개발자에게 에러 메시지를 전달해주세요. 에러 메시지 : %1$s</string>
+    <string name="movie_data_load_system_error">서버에서 발생한 오류로 인하여 검색에 실패했습니다. 개발자에게 에러 메시지를 전달해주세요. 에러 메시지 : %1$s</string>
+    <string name="movie_data_network_not_connecting_error">인터넷 연결이 끊어져있습니다. 인터넷 연결 후 다시 시도해주세요.</string>
+    <string name="movie_data_non_existent_word_error">해당 검색어로는 조회되는 결과가 없습니다.</string>
+    <string name="movie_data_no_more_data_error">마지막 데이터 입니다.</string>
+
+    <!-- custom progress dialog -->
+    <string name="custom_progress_dialog_message">잠시만 기다려주세요</string>
+</resources>

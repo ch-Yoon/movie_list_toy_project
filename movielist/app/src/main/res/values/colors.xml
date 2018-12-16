@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">@color/colorCyan</color>
+    <color name="colorPrimaryDark">@color/colorDarkCyan</color>
+    <color name="colorAccent">#d81b60</color>
+    <color name="colorCyan">#27b0a6</color>
+    <color name="colorDarkCyan">#079096</color>
+</resources>
